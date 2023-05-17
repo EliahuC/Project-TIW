@@ -51,7 +51,9 @@ CREATE TABLE `relationships` (
   `father` int NOT NULL,
   `child` int NOT NULL,
   PRIMARY KEY (`father`,`child`),
-  CONSTRAINT `id` FOREIGN KEY (`father`) REFERENCES `Category` (`id`) ON UPDATE CASCADE
+  KEY `child_idx` (`child`),
+  CONSTRAINT `child` FOREIGN KEY (`child`) REFERENCES `Category` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `father` FOREIGN KEY (`father`) REFERENCES `Category` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -104,4 +106,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-12 20:46:35
+-- Dump completed on 2023-05-17 10:27:32
