@@ -27,7 +27,8 @@ DROP TABLE IF EXISTS `Category`;
 CREATE TABLE `Category` (
   `id` int NOT NULL,
   `name` varchar(45) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `existence` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -37,6 +38,7 @@ CREATE TABLE `Category` (
 
 LOCK TABLES `Category` WRITE;
 /*!40000 ALTER TABLE `Category` DISABLE KEYS */;
+INSERT INTO `Category` VALUES (9,'materiali solidi'),(91,'materiali inerti'),(92,'materiali ferrosi'),(911,'inerti da edilizia'),(912,'ineri ceramici'),(9111,'amianto'),(9112,'materiali cementizi'),(9121,'piastrelle'),(9122,'sanitari'),(91111,'amianto in lastre'),(91112,'amianto in frammenti');
 /*!40000 ALTER TABLE `Category` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -52,8 +54,8 @@ CREATE TABLE `relationships` (
   `child` int NOT NULL,
   PRIMARY KEY (`father`,`child`),
   KEY `child_idx` (`child`),
-  CONSTRAINT `child` FOREIGN KEY (`child`) REFERENCES `Category` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT `father` FOREIGN KEY (`father`) REFERENCES `Category` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT `child` FOREIGN KEY (`child`) REFERENCES `Category` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `father` FOREIGN KEY (`father`) REFERENCES `Category` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -63,6 +65,7 @@ CREATE TABLE `relationships` (
 
 LOCK TABLES `relationships` WRITE;
 /*!40000 ALTER TABLE `relationships` DISABLE KEYS */;
+INSERT INTO `relationships` VALUES (9,91),(9,92),(91,911),(91,912),(911,9111),(911,9112),(912,9121),(912,9122),(9111,91111),(9111,91112);
 /*!40000 ALTER TABLE `relationships` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -106,4 +109,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-17 10:27:32
+-- Dump completed on 2023-05-17 13:53:16
