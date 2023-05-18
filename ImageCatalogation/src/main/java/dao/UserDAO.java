@@ -20,15 +20,19 @@ public class UserDAO {
 			pstatement.setString(1, username);
 			pstatement.setString(2, password);
 			try (ResultSet result = pstatement.executeQuery();) {
-				if (!result.isBeforeFirst()) // no results, credential check failed
+				if (!result.isBeforeFirst()) { // no results, credential check failed
 					return null;
-				else {
+				}else {
 					result.next();
 					User user = new User();
 					user.setId(result.getInt("id"));
 					user.setUsername(result.getString("username"));
 					user.setName(result.getString("name"));
 					user.setSurname(result.getString("surname"));
+					System.out.println("Id: " + user.getId());
+					System.out.println("Username: " + user.getUsername());
+					System.out.println("Name: " + user.getName());
+					System.out.println("Surname: " + user.getSurname());
 					return user;
 				}
 			}

@@ -73,8 +73,10 @@ public class CheckLogin extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
+		System.out.println(username + " " + password);
 		UserDAO userDAO = new UserDAO(connection);
 		User user = null;
+		
 		try {
 			user = userDAO.checkCredentials(username, password);
 		} catch (SQLException e) {
@@ -91,7 +93,7 @@ public class CheckLogin extends HttpServlet {
 			templateEngine.process(path, ctx, response.getWriter());
 		} else {
 			request.getSession().setAttribute("user", user);
-			path = getServletContext().getContextPath() + "/Home";
+			path = getServletContext().getContextPath() + "/GoToHomePage";
 			response.sendRedirect(path);
 		}
 	}

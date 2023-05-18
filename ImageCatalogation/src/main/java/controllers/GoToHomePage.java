@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -18,6 +19,9 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
+
+import beans.Category;
+import dao.CategoryDAO;
 
 
 /**
@@ -67,7 +71,7 @@ public class GoToHomePage extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		// If the user is not logged in (not present in session) redirect to the login
+		// If the user is not logged in (not present in session) redirect to the login -> PROBABLY USELESS
 		String loginpath = getServletContext().getContextPath() + "/index.html";
 		HttpSession session = request.getSession();
 		if (session.isNew() || session.getAttribute("user") == null) {
@@ -75,15 +79,26 @@ public class GoToHomePage extends HttpServlet {
 			return;
 		}
 		
-		//response.getWriter().append("Served at: ").append(request.getContextPath()); Probably this line is useless
+		CategoryDAO categoryDAO = new CategoryDAO(connection);
+
+		List<Category> categories = null;
 		
-		//TODO: collegati con il CategoryDAO quando sarà pronto
+		try {
+			categories = categoryDAO.findAllCategories();
+			for(Category c : categories) {
+				System.out.println("Id: " + c.getId() + ", name:  " + c.getName());
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error");
+			return;
+		}
 		
 		// After the login, redirect the user to the home page
 		String path = "/WEB-INF/Home.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-		
+		ctx.setVariable("allCategories", categories);
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 
@@ -91,7 +106,6 @@ public class GoToHomePage extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
 
