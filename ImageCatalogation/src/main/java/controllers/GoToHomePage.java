@@ -85,6 +85,7 @@ public class GoToHomePage extends HttpServlet {
 		
 		try {
 			categories = categoryDAO.findAllCategories();
+	
 			for(Category c : categories) {
 				System.out.println("Id: " + c.getId() + ", name:  " + c.getName());
 			}
