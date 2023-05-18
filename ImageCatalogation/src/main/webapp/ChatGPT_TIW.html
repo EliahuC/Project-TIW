@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gestione tassonomia</title>
+</head>
+<body>
+  <h1>Gestione tassonomia</h1>
+
+  <h2>Albero gerarchico delle categorie</h2>
+  <ul id="albero">
+    <li>9 Materiali solidi
+      <ul>
+        <li>91 Materiali inerti
+          <ul>
+            <li>911 Inerti da edilizia
+              <ul>
+                <li>9111 Amianto
+                  <ul>
+                    <li>91111 Amianto in lastre</li>
+                    <li>91112 Amianto in frammenti</li>
+                  </ul>
+                </li>
+                <li>9112 Materiali cementizi</li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li>92 Materiali ferrosi</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h2>Inserimento nuova categoria</h2>
+  <form id="nuovaCategoriaForm">
+    <label for="nomeCategoria">Nome nuova categoria:</label>
+    <input type="text" id="nomeCategoria" required>
+
+    <label for="categoriaPadre">Categoria padre:</label>
+    <select id="categoriaPadre">
+      <option value="">Nessuna</option>
+      <option value="9">9 Materiali solidi</option>
+      <option value="91">91 Materiali inerti</option>
+      <option value="911">911 Inerti da edilizia</option>
+      <option value="9111">9111 Amianto</option>
+      <option value="91111">91111 Amianto in lastre</option>
+      <option value="91112">91112 Amianto in frammenti</option>
+      <option value="9112">9112 Materiali cementizi</option>
+      <option value="92">92 Materiali ferrosi</option>
+    </select>
+
+    <button type="submit">Aggiungi</button>
+  </form>
+
+  <script>
+    // Funzione per gestire l'invio del form per l'aggiunta di una nuova categoria
+    document.getElementById('nuovaCategoriaForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      var nomeCategoria = document.getElementById('nomeCategoria').value;
+      var categoriaPadre = document.getElementById('categoriaPadre').value;
+
+      // Effettua l'aggiornamento dell'albero visualizzato a livello client
+      var nuovoElemento = document.createElement('li');
+      nuovoElemento.textContent = nomeCategoria;
+
+      var albero = document.getElementById('albero');
+      if (categoriaPadre) {
+        var categoriaPadreElemento = document.querySelector('[data-categoria="' + categoriaPadre + '"]');
+        var sottoalbero = categoriaPadreElemento.querySelector('ul');
+        if (!sottoalbero) {
+          sottoalbero = document.createElement('ul');
+          categoriaPadreElemento.appendChild(sottoalbero);
+        }
+        sottoalbero.appendChild(nuovoElemento);
+      } else {
+        albero.appendChild(nuovoElemento);
+      }
+
+      // Salva la tassonomia modificata lato server (implementazione server-side non inclusa)
+      // ...
+
+      // Resetta il form
+      document.getElementById('nomeCategoria').value = '';
+      document.getElementById('categoriaPadre').value = '';
+    });
+  </script>
+</body>
+</html>
