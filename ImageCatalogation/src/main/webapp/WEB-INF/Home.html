@@ -1,26 +1,47 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-<title>Images collection</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="stylesheet" type="text/css" media="all" href="css/mystyle.css" th:href="@{/css/mystyle.css}" />
+
+<meta charset="ISO-8859-1">
+<title>Image collection</title>
+<link rel="stylesheet" type="text/css" media="all"
+	href="../CSS/mystyle.css" th:href="@{/css/mystyle.css}" />
 </head>
+
 <body>
-<h1>Welcome to the images collection</h1>
-<h2>Select a topic to see its messages</h2>
-<table border="1">
-	<thead>
-		<tr><th>Topic Name</th></tr>
-	</thead>
-	<tbody th:remove="all-but-first">
-		<tr th:each="topic : ${topics}" th:class="${topicStat.even}? 'even'">
-			<td th:text="${topic.name}">Onions</td>
-		</tr>
-		<tr class="even"><td>Blue Lettuce</td></tr>
-		<tr><td>Mild Cinnamon</td></tr>
-		<tr class="even"><td>Apples</td></tr>
-		<tr><td>Oranges</td></tr>
-	</tbody>
-</table>
+
+	<h1>Welcome to the images collection</h1>
+	
+	<ul>
+		<li th:each="category : ${allCategories}">
+            <span th:text="${category.id}"></span>
+            <span th:text="${category.name}"></span>
+        </li>
+	</ul>
+	 
+	<div  class="formdiv">
+		<p>Complete the form to create a product</p>
+		<form action="#" th:action="@{/CreateCategory}" method="POST">
+			<fieldset>
+				
+				<p>
+					Name: <input type="text" name="name" required />
+				</p>
+					
+				<label for="allCategories">
+					Choose a father product:
+				</label> 
+				<select
+					name="father" id="father">
+					<option th:each="category : ${allCategories}" 
+						th:value="${category.id}"
+						th:text="${category.name}">
+					</option>
+				</select>
+					
+				<input type="submit" name="Create Category">
+				
+			</fieldset>
+		</form>
+	</div>
 </body>
 </html>
