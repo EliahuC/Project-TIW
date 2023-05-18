@@ -41,11 +41,4 @@ public class Category implements Serializable{
 	public void removeSubpart(Category p) {
 		children.remove(p);
 	}
-	public void setIsTop(boolean x) {
-		this.isTop=x;
-	}
-	
-	public boolean getIsTop() {
-		return isTop;
-	}
 }

@@ -3,29 +3,16 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Login page</title>
-<style> body{
-background: #000080;
-}
-</style>
 </head>
 <body>
-	<h1 align="center" style="color:#ff0000"><font size=10> WELCOME TO THE IMAGE CATALOGATION WEBSITE</font></h1>
-	<h2 align="left" style="color:#ff0000"><font size="7">Please login to join our site</font></h2>
+	<h1>Welcome to the mission management application</h1>
 
-	    <form action="CheckLogin" method="POST">
-		     <p style ="color:#00ff00;"><font size="4">UserName:</font></p> <input type="text" name="username" required> <br>
-		     <p style ="color:#00ff00;"><font size="4">Password:</font></p><input type="password" name="password" required><br>
-		     <input type="submit" value="login">
+	<form action="CheckLogin" method="POST">
+		Username: <input type="text" name="username" required> <br>
+		Password: <input type="password" name="pwd" required><br>
+		<input type="submit" value="login">
 		<p th:text=" ${errorMsg}"></p>
-	    </form>
-<p><br></p>
-<p><br></p>
-<p><br></p>
-<p><br></p>
-<p><br></p>
-<p><br></p>
-<p><br></p>
+	</form>
 
-<p align=center style ="color:#00ff00;" ><font size="9">WebSite made by Eliahu Cohen and Lorenzo Fonnesu</font></p> 
 </body>
 </html>
