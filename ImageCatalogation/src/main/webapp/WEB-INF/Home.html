@@ -5,19 +5,29 @@
 <title>Image collection</title>
 <link rel="stylesheet" type="text/css" media="all"
 	href="../CSS/mystyle.css" th:href="@{/css/mystyle.css}" />
-</head>
+</head> 
+
 
 <body>
 
 	<h1>Welcome to the images collection</h1>
 	
-	<ul>
-		<li th:each="category : ${allCategories}">
-            <span th:text="${category.id}"></span>
-            <span th:text="${category.name}"></span>
-        </li>
-	</ul>
-	 
+
+<form th:action="@{/CopyCategory}" method="get">
+  <ul>
+    <li th:each="category : ${allCategories}">
+      <span th:text="${category.id}"></span>
+      <span th:text="${category.name}"></span>
+      <span>
+        <button type="submit" name="categoryId" th:value="${category.id}">Copia</button>
+      </span> 
+    </li>
+  </ul>
+</form>
+
+
+
+ 	
 	<div  class="formdiv">
 		<p>Complete the form to create a product</p>
 		<form action="#" th:action="@{/CreateCategory}" method="POST">
@@ -39,9 +49,11 @@
 				</select>
 					
 				<input type="submit" name="Create Category">
-				
 			</fieldset>
 		</form>
+
+
+		
 	</div>
 </body>
 </html>

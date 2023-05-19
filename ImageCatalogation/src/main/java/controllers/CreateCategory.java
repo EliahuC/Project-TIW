@@ -87,7 +87,7 @@ public class CreateCategory extends HttpServlet {
 		}
 		
 		if (badRequest) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing or incorrect parameters");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "MISSING OR INCORRECT PARAMETERS");
 			return;
 		}
 		
@@ -100,7 +100,7 @@ public class CreateCategory extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Error in creating the product in the database");
+					"CANNOT CREATE A NEW CATEGORY");
 			return;
 		}
 		String ctxpath = getServletContext().getContextPath();

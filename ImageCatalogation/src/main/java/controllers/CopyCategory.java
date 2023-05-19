@@ -73,9 +73,11 @@ public class CopyCategory extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String fatherID=null;
+		
 		boolean badRequest = false;
 		try {
-			fatherID = request.getParameter("father");
+			
+			fatherID = request.getParameter("categoryId");
 			if (fatherID.isEmpty()) {
 				badRequest = true;
 			}
@@ -84,7 +86,7 @@ public class CopyCategory extends HttpServlet {
 		}
 
 		if (badRequest) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing or incorrect parameters");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "MISSING OR INCORRECT PARAMETERS");
 			return;
 		}
 		CategoryDAO category= new CategoryDAO(connection);
@@ -93,13 +95,17 @@ public class CopyCategory extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Error in creating the product in the database");
+					"CANNOT CREATE A NEW CATEGORY");
 			return;
 		}
 		//setto copiedCategory usabile dalla post
 		this.getServletConfig().getServletContext().setAttribute("copiedCategory",copiedCategory);
+		System.out.println("copia sto cazzo");
+		request.setAttribute("isButtonClicked", true);
+		 String ctxpath = getServletContext().getContextPath();
+		 String path = ctxpath + "/GoToHomePage";
+		 response.sendRedirect(path);
 		
-		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**
@@ -112,7 +118,7 @@ public class CopyCategory extends HttpServlet {
 		//modo per tenere la category nella stessa sessione di servlet
 		copiedCategory=(Category)this.getServletConfig().getServletContext().getAttribute("copiedCategory");
 		try {
-			destination = request.getParameter("father");
+			destination = request.getParameter("categoryId");
 			if (destination.isEmpty()) {
 				badRequest = true;
 			}
@@ -121,7 +127,7 @@ public class CopyCategory extends HttpServlet {
 		}
 
 		if (badRequest) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing or incorrect parameters");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "MISSING OR INCORRECT PARAMETERS");
 			return;
 		}
 		CategoryDAO category= new CategoryDAO(connection);
@@ -130,7 +136,7 @@ public class CopyCategory extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Error in creating the product in the database");
+					"CANNOT CREATE A NEW CATEGORY");
 			return;
 		}
 		String newDestination=category.getNewID(destination);
@@ -152,7 +158,7 @@ public class CopyCategory extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Error in creating the product in the database");
+					"CANNOT CREATE A NEW CATEGORY");
 			return;
 		}
 		String destination=category.getNewID(newDestination);
@@ -165,6 +171,11 @@ public class CopyCategory extends HttpServlet {
 		}
 		//rimozione variabile storeata
 	    this.getServletConfig().getServletContext().removeAttribute("copiedCategory");
+	    
+		
+		 String ctxpath = getServletContext().getContextPath();
+		 String path = ctxpath + "/GoToHomePage";
+		 response.sendRedirect(path);
 	}
 	
 	
