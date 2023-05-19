@@ -100,9 +100,69 @@ public class CopyCategory extends HttpServlet {
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *  response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String destination=null;
+		boolean badRequest = false;
+		try {
+			destination = request.getParameter("father");
+			if (destination.isEmpty()) {
+				badRequest = true;
+			}
+		} catch (NullPointerException | NumberFormatException e) {
+			badRequest = true;
+		}
+
+		if (badRequest) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing or incorrect parameters");
+			return;
+		}
+		CategoryDAO category= new CategoryDAO(connection);
+		try {
+	        category.createCategory(copiedCategory.getName(),destination);	
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Error in creating the product in the database");
+			return;
+		}
+		String newDestination=category.getNewID(destination);
+		if(newDestination==null)
+			newDestination=String.valueOf(Integer.parseInt(destination)-1);
+		else
+			newDestination=String.valueOf(Integer.parseInt(newDestination)-1);
+		for(Category c: copiedCategory.getSubparts().keySet()) {
+			putSubparts(c,newDestination,category,response);
+		}
+		 String ctxpath = getServletContext().getContextPath();
+		 String path = ctxpath + "/GoToHomePage";
+		 response.sendRedirect(path);
+		}
+
+	private void putSubparts(Category c, String newDestination,CategoryDAO category,HttpServletResponse response) throws IOException {
+		try {
+	        category.createCategory(c.getName(),newDestination);	
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Error in creating the product in the database");
+			return;
+		}
+		String destination=category.getNewID(newDestination);
+		if(destination==null)
+			destination=String.valueOf(Integer.parseInt(newDestination)-1);
+		else
+			destination=String.valueOf(Integer.parseInt(destination)-1);
+		for(Category c1: c.getSubparts().keySet()) {
+			putSubparts(c1,destination,category,response);
+		}
+		
+	}
+	
+	
+	/*protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String destination=null;
 		boolean badRequest = false;
 		try {
@@ -172,5 +232,16 @@ public class CopyCategory extends HttpServlet {
 			addSubparts(copiedCategories,c1);
 		}
 	}
-
+*/
+	
+	@Override
+	public void destroy() {
+		if (connection != null) {
+			try {
+				connection.close();
+			} catch (SQLException e){
+				
+			}
+		}
+	}
 }
