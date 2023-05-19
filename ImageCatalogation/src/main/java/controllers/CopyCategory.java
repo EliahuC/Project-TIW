@@ -96,6 +96,9 @@ public class CopyCategory extends HttpServlet {
 					"Error in creating the product in the database");
 			return;
 		}
+		//setto copiedCategory usabile dalla post
+		this.getServletConfig().getServletContext().setAttribute("copiedCategory",copiedCategory);
+		
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
@@ -106,6 +109,8 @@ public class CopyCategory extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String destination=null;
 		boolean badRequest = false;
+		//modo per tenere la category nella stessa sessione di servlet
+		copiedCategory=(Category)this.getServletConfig().getServletContext().getAttribute("copiedCategory");
 		try {
 			destination = request.getParameter("father");
 			if (destination.isEmpty()) {
@@ -158,7 +163,8 @@ public class CopyCategory extends HttpServlet {
 		for(Category c1: c.getSubparts().keySet()) {
 			putSubparts(c1,destination,category,response);
 		}
-		
+		//rimozione variabile storeata
+	    this.getServletConfig().getServletContext().removeAttribute("copiedCategory");
 	}
 	
 	
