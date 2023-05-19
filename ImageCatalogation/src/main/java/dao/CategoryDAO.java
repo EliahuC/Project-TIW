@@ -81,7 +81,7 @@ public class CategoryDAO {
      
      
      
-	private String getNewID(String fatherID) {
+	public String getNewID(String fatherID) {
 		Category father=null;
 		try {
 		     father=checkCategory(fatherID);
