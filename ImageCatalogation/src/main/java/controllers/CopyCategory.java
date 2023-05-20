@@ -4,8 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -14,8 +13,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
@@ -36,7 +37,6 @@ public class CopyCategory extends HttpServlet {
      */
     public CopyCategory() {
         super();
-        // TODO Auto-generated constructor stub
     }
     
     public void init() throws ServletException {
@@ -72,11 +72,11 @@ public class CopyCategory extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("Sei dentro CopyCategory");
 		String fatherID=null;
-		
 		boolean badRequest = false;
+		
 		try {
-			
 			fatherID = request.getParameter("categoryId");
 			if (fatherID.isEmpty()) {
 				badRequest = true;
@@ -89,167 +89,34 @@ public class CopyCategory extends HttpServlet {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "MISSING OR INCORRECT PARAMETERS");
 			return;
 		}
+		
 		CategoryDAO category= new CategoryDAO(connection);
+		List<Category> categories = null;
+		//Category copiedCategory;
+		
 		try {
-			copiedCategory=category.checkCategory(fatherID);
+			categories = category.findAllCategories();
+			copiedCategory = category.checkCategory(fatherID);
 		} catch (Exception e) {
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 					"CANNOT CREATE A NEW CATEGORY");
 			return;
 		}
+		
 		//setto copiedCategory usabile dalla post
-		this.getServletConfig().getServletContext().setAttribute("copiedCategory",copiedCategory);
-		System.out.println("copia sto cazzo");
-		request.setAttribute("isButtonClicked", true);
-		 String ctxpath = getServletContext().getContextPath();
-		 String path = ctxpath + "/GoToHomePage";
-		 response.sendRedirect(path);
-		
+		/*this.getServletConfig().getServletContext().setAttribute("copiedCategory",copiedCategory);
+		String ctxpath = getServletContext().getContextPath();
+		String path = ctxpath + "/GoToHomePage";*/
+
+		String path = "/WEB-INF/Home.html";
+		ServletContext servletContext = getServletContext();
+		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		ctx.setVariable("allCategories", categories);
+		ctx.setVariable("linkClicked", true);
+		request.getSession().setAttribute("copiedCategory", copiedCategory);
+		templateEngine.process(path, ctx, response.getWriter());
 	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *  response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String destination=null;
-		boolean badRequest = false;
-		//modo per tenere la category nella stessa sessione di servlet
-		copiedCategory=(Category)this.getServletConfig().getServletContext().getAttribute("copiedCategory");
-		try {
-			destination = request.getParameter("categoryId");
-			if (destination.isEmpty()) {
-				badRequest = true;
-			}
-		} catch (NullPointerException | NumberFormatException e) {
-			badRequest = true;
-		}
-
-		if (badRequest) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "MISSING OR INCORRECT PARAMETERS");
-			return;
-		}
-		CategoryDAO category= new CategoryDAO(connection);
-		try {
-	        category.createCategory(copiedCategory.getName(),destination);	
-		} catch (Exception e) {
-			e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"CANNOT CREATE A NEW CATEGORY");
-			return;
-		}
-		String newDestination=category.getNewID(destination);
-		if(newDestination==null)
-			newDestination=String.valueOf(Integer.parseInt(destination)-1);
-		else
-			newDestination=String.valueOf(Integer.parseInt(newDestination)-1);
-		for(Category c: copiedCategory.getSubparts().keySet()) {
-			putSubparts(c,newDestination,category,response);
-		}
-		 String ctxpath = getServletContext().getContextPath();
-		 String path = ctxpath + "/GoToHomePage";
-		 response.sendRedirect(path);
-		}
-
-	private void putSubparts(Category c, String newDestination,CategoryDAO category,HttpServletResponse response) throws IOException {
-		try {
-	        category.createCategory(c.getName(),newDestination);	
-		} catch (Exception e) {
-			e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"CANNOT CREATE A NEW CATEGORY");
-			return;
-		}
-		String destination=category.getNewID(newDestination);
-		if(destination==null)
-			destination=String.valueOf(Integer.parseInt(newDestination)-1);
-		else
-			destination=String.valueOf(Integer.parseInt(destination)-1);
-		for(Category c1: c.getSubparts().keySet()) {
-			putSubparts(c1,destination,category,response);
-		}
-		//rimozione variabile storeata
-	    this.getServletConfig().getServletContext().removeAttribute("copiedCategory");
-	    
-		
-		 String ctxpath = getServletContext().getContextPath();
-		 String path = ctxpath + "/GoToHomePage";
-		 response.sendRedirect(path);
-	}
-	
-	
-	/*protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String destination=null;
-		boolean badRequest = false;
-		try {
-			destination = request.getParameter("father");
-			if (destination.isEmpty()) {
-				badRequest = true;
-			}
-		} catch (NullPointerException | NumberFormatException e) {
-			badRequest = true;
-		}
-
-		if (badRequest) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing or incorrect parameters");
-			return;
-		}
-		
-		
-		//Selection of all the parts to add in the database
-		HashMap<Category,ArrayList<Category>> tree=new HashMap<>();
-		
-		for(Category c: copiedCategory.getSubparts().keySet()) {
-			  ArrayList<Category> cC=new ArrayList<>();
-			  addSubparts(cC,c);
-			  tree.put(c, cC);
-			}
-		
-		
-		CategoryDAO category= new CategoryDAO(connection);
-		try {
-	        category.createCategory(copiedCategory.getName(),destination);	
-		} catch (Exception e) {
-			e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Error in creating the product in the database");
-			return;
-		}
-		String newDestination=category.getNewID(destination);
-		if(newDestination==null)
-			newDestination=String.valueOf(Integer.parseInt(destination)-1);
-		else
-			newDestination=String.valueOf(Integer.parseInt(newDestination)-1);
-		//adding the sons categories
-		for(int i=1;i<tree.size();i++) {
-			try {
-				destination=category.getNewID(newDestination);
-				category.createCategory(tree.get(i).get(0).getName(),destination);
-				for(int j=1;j<tree.get(i).size();j++) {
-		        category.createCategory(tree.get(i).get(j).getName(),destination);
-		        }
-			} catch (Exception e) {
-				e.printStackTrace();
-				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-						"Error in creating the product in the database");
-				return;
-			}
-		}
-		
-		 String ctxpath = getServletContext().getContextPath();
-		 String path = ctxpath + "/GoToHomePage";
-		 response.sendRedirect(path);
-		}
-	
-	
-	private void addSubparts(ArrayList<Category> copiedCategories,Category c) {
-		copiedCategories.add(c);
-		for(Category c1: c.getSubparts().keySet()) {
-			addSubparts(copiedCategories,c1);
-		}
-	}
-*/
 	
 	@Override
 	public void destroy() {

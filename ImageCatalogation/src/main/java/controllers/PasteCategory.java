@@ -13,7 +13,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
@@ -23,12 +22,11 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import beans.Category;
 import dao.CategoryDAO;
 
-
 /**
- * Servlet implementation class GoToHomePage
+ * Servlet implementation class PasteCategory
  */
-@WebServlet("/GoToHomePage")
-public class GoToHomePage extends HttpServlet {
+@WebServlet("/PasteCategory")
+public class PasteCategory extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private TemplateEngine templateEngine;
 	private Connection connection;
@@ -36,10 +34,10 @@ public class GoToHomePage extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public GoToHomePage() {
+    public PasteCategory() {
         super();
     }
-    
+
     public void init() throws ServletException {
     	try {
 			ServletContext context = getServletContext();
@@ -65,36 +63,53 @@ public class GoToHomePage extends HttpServlet {
 		this.templateEngine.setTemplateResolver(templateResolver);
 		templateResolver.setSuffix(".html");
     }
- 
-	/**
+
+    /**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("Sei dentro PasteCategory");
+		String destination=null;
+		boolean badRequest = false;
+		//Category copiedCategory = (Category) getServletContext().getAttribute("copiedCategory");
+		Category copiedCategory = (Category) request.getSession().getAttribute("copiedCategory");
 		
-		// If the user is not logged in (not present in session) redirect to the login -> PROBABLY USELESS
-		String loginpath = getServletContext().getContextPath() + "/index.html";
-		HttpSession session = request.getSession();
-		if (session.isNew() || session.getAttribute("user") == null) {
-			response.sendRedirect(loginpath);
+		try {
+			destination = request.getParameter("categoryId");
+			if (destination.isEmpty()) {
+				badRequest = true;
+			}
+		} catch (NullPointerException | NumberFormatException e) {
+			badRequest = true;
+		}
+
+		if (badRequest) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "MISSING OR INCORRECT PARAMETERS");
 			return;
 		}
 		
-		CategoryDAO categoryDAO = new CategoryDAO(connection);
+		CategoryDAO category= new CategoryDAO(connection);
 		List<Category> categories = null;
 		
 		try {
-			categories = categoryDAO.findAllCategories();
-
-			for(Category c : categories) {
-				System.out.println("Id: " + c.getId() + ", name:  " + c.getName());
-			}
-		}catch(Exception e) {
+			categories = category.findAllCategories();
+	        category.createCategory(copiedCategory.getName(),destination);	
+		} catch (Exception e) {
 			e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error");
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"CANNOT CREATE A NEW CATEGORY");
 			return;
 		}
 		
-		// After the login, redirect the user to the home page
+		String newDestination=category.getNewID(destination);
+		if(newDestination==null)
+			newDestination=String.valueOf(Integer.parseInt(destination)-1);
+		else
+			newDestination=String.valueOf(Integer.parseInt(newDestination)-1);
+		for(Category c: copiedCategory.getSubparts().keySet()) {
+			putSubparts(c,newDestination,category,response);
+		}
+
 		String path = "/WEB-INF/Home.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
@@ -103,13 +118,33 @@ public class GoToHomePage extends HttpServlet {
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
+	private void putSubparts(Category c, String newDestination,CategoryDAO category,HttpServletResponse response) throws IOException {
+		try {
+	        category.createCategory(c.getName(),newDestination);	
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"CANNOT CREATE A NEW CATEGORY");
+			return;
+		}
+		String destination=category.getNewID(newDestination);
+		if(destination==null)
+			destination=String.valueOf(Integer.parseInt(newDestination)-1);
+		else
+			destination=String.valueOf(Integer.parseInt(destination)-1);
+		for(Category c1: c.getSubparts().keySet()) {
+			putSubparts(c1,destination,category,response);
+		}
+		//rimozione variabile storeata
+	    this.getServletConfig().getServletContext().removeAttribute("copiedCategory");
+	    
+		
+		 String ctxpath = getServletContext().getContextPath();
+		 String path = ctxpath + "/GoToHomePage";
+		 response.sendRedirect(path);
 	}
-
+	
+	@Override
 	public void destroy() {
 		if (connection != null) {
 			try {
