@@ -9,16 +9,26 @@ import java.util.List;
 
 import beans.Category;
 
-
+/**
+ * Dao that handles all the categories and their methods
+ */
 public class CategoryDAO {
 	private Connection con;
 	
 	public CategoryDAO(Connection connection){
 		this.con=connection;
 	}
+	
+	
+	/**
+	 * The method creates copiedCategory requested by CopyCategory and calls addSubparts to add all the children to their father
+	 * @param id of the father
+	 * @return the father category and its subtree
+	 * @throws SQLException
+	 */
 	public Category checkCategory(String id) throws SQLException {
 		
-		String query = "SELECT id,name FROM category WHERE id = ?";
+		String query = "SELECT * FROM category WHERE id = ?";
 		try (PreparedStatement pstatement = con.prepareStatement(query);) {
 			pstatement.setString(1, id);
 			try (ResultSet result = pstatement.executeQuery();) {
@@ -37,9 +47,15 @@ public class CategoryDAO {
 	}
 	
 	
-	public void addSubparts(Category category,String ID) throws SQLException {
-		String query=
-				"SELECT child FROM relationships WHERE father=?";
+	/**
+	 * selects the children from the category passed and for each calls the method checkCategory to create their subtree
+	 * @param category to add to the father
+	 * @param ID of the father
+	 * @throws SQLException
+	 */
+	public void addSubparts(Category category, String ID) throws SQLException {
+		String query="SELECT child FROM relationships WHERE father=?";
+		
 		try (PreparedStatement pstatement = con.prepareStatement(query);) {
 			pstatement.setString(1,ID);
 			try (ResultSet result = pstatement.executeQuery();) {
@@ -52,12 +68,34 @@ public class CategoryDAO {
 			}
 		}
 	}
-		
 	
-
-
-     public void createCategory(String name, String id) throws SQLException {
+	
+	public void setCopied(Category father) throws SQLException {
+		String query="SELECT child FROM relationships WHERE father=?";
+		
+		try (PreparedStatement pstatement = con.prepareStatement(query);) {
+			pstatement.setString(1, father.getId());
+			try (ResultSet result = pstatement.executeQuery();) {
+				if (!result.isBeforeFirst())
+					return;
+				while(result.next()) {
+					father.setCopied(true);
+					//TODO : chiama setCopied per ogni figlio
+			    }
+			}
+		}
+	}
+	
+	
+	/**
+	 * Method that is used to create a new category or to paste an existing category into another one
+	 * @param name of the category to create/paste
+	 * @param id of the father category
+	 * @throws SQLException
+	 */
+	 public void createCategory(String name, String id) throws SQLException {
     	 String idchild=getNewID(id);
+    	 System.out.println(idchild + " " + name);
     	 if(idchild==null) {
     		return; 
     	 }
@@ -79,9 +117,13 @@ public class CategoryDAO {
     	 }
     }
      
-     
-     
-	public String getNewID(String fatherID) {
+	 
+     /**
+      * 
+      * @param fatherID
+      * @return
+      */
+     public String getNewID(String fatherID) {
 	     Category father;
 		try {
 		 father=checkCategory(fatherID);
@@ -98,6 +140,33 @@ public class CategoryDAO {
 	}
 	
 
+ 	public void paste(String fatherId, String fatherNewId) throws SQLException {
+ 		String query = "SELECT child FROM relationships WHERE father = ?";
+ 		
+ 		try (PreparedStatement pstatement = con.prepareStatement(query);) {
+ 			pstatement.setString(1, fatherId);
+ 			try (ResultSet result = pstatement.executeQuery();) {
+ 				if (!result.isBeforeFirst())
+ 					return;
+ 				while(result.next()) {
+ 					String query2 = "SELECT * FROM category WHERE id = ?";
+ 					try (PreparedStatement pstatement1 = con.prepareStatement(query2);) {
+ 						pstatement1.setString(1, result.getString("child"));
+ 						try (ResultSet result1 = pstatement1.executeQuery();) {
+ 							if (!result1.isBeforeFirst())
+ 								return;
+ 							while(result1.next()) {
+ 								String childNewId = getNewID(fatherNewId);
+ 								createCategory(result1.getString("name"), fatherNewId);
+ 								paste(result1.getString("id"), childNewId);
+ 							}
+ 						}
+ 					}
+ 			    }
+ 			}
+ 		}
+ 	}
+ 	
 	
 	public List<Category> findAllCategories() throws SQLException{
 		List<Category> categories = new ArrayList<Category>();
@@ -114,7 +183,6 @@ public class CategoryDAO {
 		}
 		return categories;
 	}
-	
 }
 
 

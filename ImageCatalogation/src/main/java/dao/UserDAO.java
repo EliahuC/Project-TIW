@@ -29,10 +29,6 @@ public class UserDAO {
 					user.setUsername(result.getString("username"));
 					user.setName(result.getString("name"));
 					user.setSurname(result.getString("surname"));
-					System.out.println("Id: " + user.getId());
-					System.out.println("Username: " + user.getUsername());
-					System.out.println("Name: " + user.getName());
-					System.out.println("Surname: " + user.getSurname());
 					return user;
 				}
 			}

@@ -23,7 +23,7 @@ import beans.Category;
 import dao.CategoryDAO;
 
 /**
- * Servlet implementation class PasteCategory
+ * Servlet implementation class PasteCategory: it's used when the link "Copia qui" is pressed
  */
 @WebServlet("/PasteCategory")
 public class PasteCategory extends HttpServlet {
@@ -38,6 +38,9 @@ public class PasteCategory extends HttpServlet {
         super();
     }
 
+    /**
+     * Init method of the servlet
+     */
     public void init() throws ServletException {
     	try {
 			ServletContext context = getServletContext();
@@ -71,7 +74,6 @@ public class PasteCategory extends HttpServlet {
 		System.out.println("Sei dentro PasteCategory");
 		String destination=null;
 		boolean badRequest = false;
-		//Category copiedCategory = (Category) getServletContext().getAttribute("copiedCategory");
 		Category copiedCategory = (Category) request.getSession().getAttribute("copiedCategory");
 		
 		try {
@@ -90,10 +92,13 @@ public class PasteCategory extends HttpServlet {
 		
 		CategoryDAO category= new CategoryDAO(connection);
 		List<Category> categories = null;
+		String copiedCategoryNewId = new String();
 		
 		try {
 			categories = category.findAllCategories();
-	        category.createCategory(copiedCategory.getName(),destination);	
+			copiedCategoryNewId = category.getNewID(destination);
+	        category.createCategory(copiedCategory.getName(), destination);
+	        category.paste(copiedCategory.getId(), copiedCategoryNewId);
 		} catch (Exception e) {
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
@@ -101,7 +106,7 @@ public class PasteCategory extends HttpServlet {
 			return;
 		}
 		
-		String newDestination=category.getNewID(destination);
+		/*String newDestination = category.getNewID(destination);
 		if(newDestination==null)
 		{
 			char lastDigit = destination.charAt(destination.length() - 1);
@@ -112,13 +117,13 @@ public class PasteCategory extends HttpServlet {
 
 
 			//newDestination=String.valueOf(Long.parseLong(destination)-1);
-			/*String support=null;
-			String support2=null;
+			//String support=null;
+			//String support2=null;
 			
 			
-			support2=String.valueOf(Integer.parseInt( String.valueOf(destination.charAt(destination.length()-1))));
-			support=destination.substring(0, destination.length()-2);
-			newDestination=support+support2;*/
+			//support2=String.valueOf(Integer.parseInt( String.valueOf(destination.charAt(destination.length()-1))));
+			//support=destination.substring(0, destination.length()-2);
+			//newDestination=support+support2;
 		}
 			
 		else {
@@ -129,30 +134,26 @@ public class PasteCategory extends HttpServlet {
 			newDestination = newDestination.substring(0, newDestination.length() - 1) + newLastDigit;
 
 			//newDestination=String.valueOf(Long.parseLong(newDestination)-1);
-			/*String support=null;
-			String support2=null;
-			support2=String.valueOf(Integer.parseInt( String.valueOf(newDestination.charAt(newDestination.length()-1))));
-			support=newDestination.substring(0, newDestination.length()-2);
-			newDestination=support+support2;*/
+			//String support=null;
+			//String support2=null;
+			//support2=String.valueOf(Integer.parseInt( String.valueOf(newDestination.charAt(newDestination.length()-1))));
+			//support=newDestination.substring(0, newDestination.length()-2);
+			//newDestination=support+support2;
 		}
 			
 		for(Category c: copiedCategory.getSubparts().keySet()) {
 			putSubparts(c,newDestination,category,response);
-		}
+		}*/
+		
         //rimozione variabile storeata
 	    this.getServletConfig().getServletContext().removeAttribute("copiedCategory");
 	    String ctxpath = getServletContext().getContextPath();
 		 String path = ctxpath + "/GoToHomePage";
 		 response.sendRedirect(path);
-		/*String path = "/WEB-INF/Home.html";
-		ServletContext servletContext = getServletContext();
-		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-		ctx.setVariable("allCategories", categories);
-		ctx.setVariable("linkClicked", false);
-		templateEngine.process(path, ctx, response.getWriter());*/
 	}
 
-	private void putSubparts(Category c, String newDestination,CategoryDAO category,HttpServletResponse response) throws IOException {
+	
+	/*private void putSubparts(Category c, String newDestination,CategoryDAO category,HttpServletResponse response) throws IOException {
 		try {
 	        category.createCategory(c.getName(),newDestination);	
 		} catch (Exception e) {
@@ -161,7 +162,9 @@ public class PasteCategory extends HttpServlet {
 					"CANNOT CREATE A NEW CATEGORY");
 			return;
 		}
+		
 		String destination=category.getNewID(newDestination);
+		
 		if(destination==null) {
 			char lastDigit = newDestination.charAt(newDestination.length() - 1);
 			int lastDigitValue = Character.getNumericValue(lastDigit);
@@ -170,14 +173,12 @@ public class PasteCategory extends HttpServlet {
 			destination = newDestination.substring(0, newDestination.length() - 1) + newLastDigit;
 
 			//destination=String.valueOf(Long.parseLong(newDestination)-1);
-			/*String support=null;
-			String support2=null;
-			support2=String.valueOf(Integer.parseInt( String.valueOf(newDestination.charAt(newDestination.length()-1))));
-			support=newDestination.substring(0, newDestination.length()-2);
-			destination=support+support2;*/
-		}
-		
-			
+			//String support=null;
+			//String support2=null;
+			//support2=String.valueOf(Integer.parseInt( String.valueOf(newDestination.charAt(newDestination.length()-1))));
+			//support=newDestination.substring(0, newDestination.length()-2);
+			//destination=support+support2;
+		}	
 		else {
 			char lastDigit = destination.charAt(destination.length() - 1);
 			int lastDigitValue = Character.getNumericValue(lastDigit);
@@ -186,22 +187,19 @@ public class PasteCategory extends HttpServlet {
 			destination = destination.substring(0, destination.length() - 1) + newLastDigit;
 
 			//destination=String.valueOf(Long.parseLong(destination)-1);
-			/*String support=null;
-			String support2=null;
-			support2=String.valueOf(Integer.parseInt( String.valueOf(destination.charAt(destination.length()-1))));
-			support=destination.substring(0, destination.length()-2);
-			destination=support+support2;*/
+			//String support=null;
+			//String support2=null;
+			//support2=String.valueOf(Integer.parseInt( String.valueOf(destination.charAt(destination.length()-1))));
+			//support=destination.substring(0, destination.length()-2);
+			//destination=support+support2;
 		}
 		
 		
 		for(Category c1: c.getSubparts().keySet()) {
 			putSubparts(c1,destination,category,response);
 		}
-		
-	    
-
-		
-	}
+	}*/
+	
 	
 	@Override
 	public void destroy() {

@@ -9,7 +9,7 @@ public class Category implements Serializable{
 	
 	private String id;
 	private String name;
-	private Boolean isTop = false;
+	private Boolean copied = false;
 	private Map<Category, String> children = new HashMap<Category, String>();
 	
 	public String getId() {
@@ -27,17 +27,17 @@ public class Category implements Serializable{
 	public Map<Category, String> getSubparts() {
 		return children;
 	}
-	public void addSubpart(Category name, String q) {
-		children.put(name, q);
+	public void addSubpart(Category category, String q) {
+		children.put(category, q);
 	}
-	public void removeSubpart(Category p) {
-		children.remove(p);
+	public void removeSubpart(Category c) {
+		children.remove(c);
 	}
-	public void setIsTop(boolean x) {
-		this.isTop=x;
+	public void setCopied(boolean x) {
+		this.copied=x;
 	}
 	
-	public boolean getIsTop() {
-		return isTop;
+	public boolean getCopied() {
+		return copied;
 	}
 }

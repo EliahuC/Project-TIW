@@ -24,7 +24,7 @@ import beans.Category;
 import dao.CategoryDAO;
 
 /**
- * Servlet implementation class CopyCategory
+ * Servlet implementation class CopyCategory: it's used when the link "Copia" is pressed
  */
 @WebServlet("/CopyCategory")
 public class CopyCategory extends HttpServlet {
@@ -32,6 +32,7 @@ public class CopyCategory extends HttpServlet {
 	private TemplateEngine templateEngine;
 	private Connection connection;
 	private Category copiedCategory;
+	
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -39,6 +40,9 @@ public class CopyCategory extends HttpServlet {
         super();
     }
     
+    /**
+     * Init method of the servlet
+     */
     public void init() throws ServletException {
     	try {
 			ServletContext context = getServletContext();
@@ -64,15 +68,16 @@ public class CopyCategory extends HttpServlet {
 		this.templateEngine.setTemplateResolver(templateResolver);
 		templateResolver.setSuffix(".html");
     }
-    
-    //doPost Put the copied parts in the data base
-    //doGet ?create the category selected?
 
+    
 	/**
+	 * Handles the GET request from Home.html when the link copy is pressed
+	 * It takes the id of the selected category, then saves all the categories in the list categories and the entire subtree to
+	 * copy in copiedCategory. To conclude, reloads the page with the boolean linkClicked set to true
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("Sei dentro CopyCategory");
+		System.out.println("Sei in CopyCategory");
 		String fatherID=null;
 		boolean badRequest = false;
 		
@@ -92,7 +97,6 @@ public class CopyCategory extends HttpServlet {
 		
 		CategoryDAO category= new CategoryDAO(connection);
 		List<Category> categories = null;
-		//Category copiedCategory;
 		
 		try {
 			categories = category.findAllCategories();
@@ -103,11 +107,6 @@ public class CopyCategory extends HttpServlet {
 					"CANNOT CREATE A NEW CATEGORY");
 			return;
 		}
-		
-		//setto copiedCategory usabile dalla post
-		/*this.getServletConfig().getServletContext().setAttribute("copiedCategory",copiedCategory);
-		String ctxpath = getServletContext().getContextPath();
-		String path = ctxpath + "/GoToHomePage";*/
 
 		String path = "/WEB-INF/Home.html";
 		ServletContext servletContext = getServletContext();
