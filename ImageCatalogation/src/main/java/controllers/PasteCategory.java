@@ -104,7 +104,14 @@ public class PasteCategory extends HttpServlet {
 		String newDestination=category.getNewID(destination);
 		if(newDestination==null)
 		{
-			newDestination=String.valueOf(Long.parseLong(destination)-1);
+			char lastDigit = destination.charAt(destination.length() - 1);
+			int lastDigitValue = Character.getNumericValue(lastDigit);
+			lastDigitValue--;
+			char newLastDigit = Character.forDigit(lastDigitValue, 10);
+			newDestination = destination.substring(0, destination.length() - 1) + newLastDigit;
+
+
+			//newDestination=String.valueOf(Long.parseLong(destination)-1);
 			/*String support=null;
 			String support2=null;
 			
@@ -115,7 +122,13 @@ public class PasteCategory extends HttpServlet {
 		}
 			
 		else {
-			newDestination=String.valueOf(Long.parseLong(newDestination)-1);
+			char lastDigit = newDestination.charAt(newDestination.length() - 1);
+			int lastDigitValue = Character.getNumericValue(lastDigit);
+			lastDigitValue--;
+			char newLastDigit = Character.forDigit(lastDigitValue, 10);
+			newDestination = newDestination.substring(0, newDestination.length() - 1) + newLastDigit;
+
+			//newDestination=String.valueOf(Long.parseLong(newDestination)-1);
 			/*String support=null;
 			String support2=null;
 			support2=String.valueOf(Integer.parseInt( String.valueOf(newDestination.charAt(newDestination.length()-1))));
@@ -150,7 +163,13 @@ public class PasteCategory extends HttpServlet {
 		}
 		String destination=category.getNewID(newDestination);
 		if(destination==null) {
-			destination=String.valueOf(Long.parseLong(newDestination)-1);
+			char lastDigit = newDestination.charAt(newDestination.length() - 1);
+			int lastDigitValue = Character.getNumericValue(lastDigit);
+			lastDigitValue--;
+			char newLastDigit = Character.forDigit(lastDigitValue, 10);
+			destination = newDestination.substring(0, newDestination.length() - 1) + newLastDigit;
+
+			//destination=String.valueOf(Long.parseLong(newDestination)-1);
 			/*String support=null;
 			String support2=null;
 			support2=String.valueOf(Integer.parseInt( String.valueOf(newDestination.charAt(newDestination.length()-1))));
@@ -160,7 +179,13 @@ public class PasteCategory extends HttpServlet {
 		
 			
 		else {
-			destination=String.valueOf(Long.parseLong(destination)-1);
+			char lastDigit = destination.charAt(destination.length() - 1);
+			int lastDigitValue = Character.getNumericValue(lastDigit);
+			lastDigitValue--;
+			char newLastDigit = Character.forDigit(lastDigitValue, 10);
+			destination = destination.substring(0, destination.length() - 1) + newLastDigit;
+
+			//destination=String.valueOf(Long.parseLong(destination)-1);
 			/*String support=null;
 			String support2=null;
 			support2=String.valueOf(Integer.parseInt( String.valueOf(destination.charAt(destination.length()-1))));

@@ -29,7 +29,7 @@ public class CategoryDAO {
 					Category category = new Category();
 					category.setId(id);
 					category.setName(result.getString("name"));
-					addSubparts(category,String.valueOf(category.getId()));
+					addSubparts(category,id);
 					return category;
 				}
 			}
