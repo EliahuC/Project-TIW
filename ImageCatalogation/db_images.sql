@@ -38,7 +38,7 @@ CREATE TABLE `category` (
 
 LOCK TABLES `category` WRITE;
 /*!40000 ALTER TABLE `category` DISABLE KEYS */;
-INSERT INTO `category` VALUES ('9','materiali solidi'),('91','materiali inerti'),('911','inerti da edilizia'),('9111','amianto'),('91111','amianto in lastre'),('91112','amianto in frammenti'),('9112','materiali cementizi'),('9113','cumma'),('912','ineri ceramici'),('9121','piastrelle'),('9122','sanitari'),('91221','bidet'),('92','materiali ferrosi'),('921','il mio cazzo'),('93','ferro');
+INSERT INTO `category` VALUES ('0','radice'),('1','materiali solidi'),('11','materiali inerti'),('111','inerti da edilizia'),('1111','amianto'),('11111','amianto in lastre'),('11112','amianto in frammenti'),('1112','materiali cementizi'),('112','ineri ceramici'),('1121','piastrelle'),('1122','sanitari'),('11221','bidet'),('12','materiali ferrosi'),('121','il mio cazzo'),('13','ferro');
 /*!40000 ALTER TABLE `category` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -65,7 +65,7 @@ CREATE TABLE `relationships` (
 
 LOCK TABLES `relationships` WRITE;
 /*!40000 ALTER TABLE `relationships` DISABLE KEYS */;
-INSERT INTO `relationships` VALUES ('9','91'),('91','911'),('911','9111'),('9111','91111'),('9111','91112'),('911','9112'),('911','9113'),('91','912'),('912','9121'),('912','9122'),('9122','91221'),('9','92'),('92','921'),('9','93');
+INSERT INTO `relationships` VALUES ('1','11'),('11','111'),('111','1111'),('1111','11111'),('1111','11112'),('111','1112'),('11','112'),('112','1121'),('112','1122'),('1122','11221'),('1','12'),('12','121'),('1','13');
 /*!40000 ALTER TABLE `relationships` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -109,4 +109,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-19 18:11:16
+-- Dump completed on 2023-05-21 10:39:12

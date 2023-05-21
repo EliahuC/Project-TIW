@@ -103,19 +103,23 @@ public class PasteCategory extends HttpServlet {
 		
 		String newDestination=category.getNewID(destination);
 		if(newDestination==null)
-			newDestination=String.valueOf(Integer.parseInt(destination)-1);
+			newDestination=String.valueOf(Long.parseLong(destination)-1);
 		else
-			newDestination=String.valueOf(Integer.parseInt(newDestination)-1);
+			newDestination=String.valueOf(Long.parseLong(newDestination)-1);
 		for(Category c: copiedCategory.getSubparts().keySet()) {
 			putSubparts(c,newDestination,category,response);
 		}
-
-		String path = "/WEB-INF/Home.html";
+        //rimozione variabile storeata
+	    this.getServletConfig().getServletContext().removeAttribute("copiedCategory");
+	    String ctxpath = getServletContext().getContextPath();
+		 String path = ctxpath + "/GoToHomePage";
+		 response.sendRedirect(path);
+		/*String path = "/WEB-INF/Home.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		ctx.setVariable("allCategories", categories);
 		ctx.setVariable("linkClicked", false);
-		templateEngine.process(path, ctx, response.getWriter());
+		templateEngine.process(path, ctx, response.getWriter());*/
 	}
 
 	private void putSubparts(Category c, String newDestination,CategoryDAO category,HttpServletResponse response) throws IOException {
@@ -129,19 +133,16 @@ public class PasteCategory extends HttpServlet {
 		}
 		String destination=category.getNewID(newDestination);
 		if(destination==null)
-			destination=String.valueOf(Integer.parseInt(newDestination)-1);
+			destination=String.valueOf(Long.parseLong(newDestination)-1);
 		else
-			destination=String.valueOf(Integer.parseInt(destination)-1);
+			destination=String.valueOf(Long.parseLong(destination)-1);
 		for(Category c1: c.getSubparts().keySet()) {
 			putSubparts(c1,destination,category,response);
 		}
-		//rimozione variabile storeata
-	    this.getServletConfig().getServletContext().removeAttribute("copiedCategory");
-	    
 		
-		 String ctxpath = getServletContext().getContextPath();
-		 String path = ctxpath + "/GoToHomePage";
-		 response.sendRedirect(path);
+	    
+
+		
 	}
 	
 	@Override
