@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `category`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `category` (
-  `id` varchar(45) NOT NULL,
+  `id` varchar(100) NOT NULL,
   `name` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `existence` (`id`)
@@ -50,12 +50,12 @@ DROP TABLE IF EXISTS `relationships`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `relationships` (
-  `father` varchar(45) NOT NULL,
-  `child` varchar(45) NOT NULL,
-  PRIMARY KEY (`father`,`child`),
-  KEY `child_idx` (`child`),
-  CONSTRAINT `childID` FOREIGN KEY (`child`) REFERENCES `category` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fatherID` FOREIGN KEY (`father`) REFERENCES `category` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  `father` varchar(100) NOT NULL,
+  `child` varchar(100) NOT NULL,
+  KEY `father_id_idx` (`father`),
+  KEY `child_id_idx` (`child`),
+  CONSTRAINT `child_id` FOREIGN KEY (`child`) REFERENCES `category` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `father_id` FOREIGN KEY (`father`) REFERENCES `category` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -65,7 +65,7 @@ CREATE TABLE `relationships` (
 
 LOCK TABLES `relationships` WRITE;
 /*!40000 ALTER TABLE `relationships` DISABLE KEYS */;
-INSERT INTO `relationships` VALUES ('1','11'),('11','111'),('111','1111'),('1111','11111'),('1111','11112'),('111','1112'),('11','112'),('112','1121'),('112','1122'),('1122','11221'),('1','12'),('12','121'),('1','13');
+INSERT INTO `relationships` VALUES ('1','11'),('1','12'),('1','13'),('11','111'),('11','112'),('111','1111'),('111','1112'),('1111','11111'),('1111','11112'),('112','1121'),('112','1122'),('1122','11221'),('12','121');
 /*!40000 ALTER TABLE `relationships` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -109,4 +109,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-21 11:30:32
+-- Dump completed on 2023-05-21 16:22:16
