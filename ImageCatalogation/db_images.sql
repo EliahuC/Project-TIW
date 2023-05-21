@@ -38,7 +38,7 @@ CREATE TABLE `category` (
 
 LOCK TABLES `category` WRITE;
 /*!40000 ALTER TABLE `category` DISABLE KEYS */;
-INSERT INTO `category` VALUES ('0','radice'),('1','materiali solidi'),('11','materiali inerti'),('111','inerti da edilizia'),('1111','amianto'),('11111','amianto in lastre'),('11112','amianto in frammenti'),('1112','materiali cementizi'),('112','ineri ceramici'),('1121','piastrelle'),('1122','sanitari'),('11221','bidet'),('12','materiali ferrosi'),('121','il mio cazzo'),('13','ferro');
+INSERT INTO `category` VALUES ('1','materiali solidi'),('11','materiali inerti'),('111','inerti da edilizia'),('1111','amianto'),('11111','amianto in lastre'),('11112','amianto in frammenti'),('1112','materiali cementizi'),('112','ineri ceramici'),('1121','piastrelle'),('1122','sanitari'),('11221','bidet'),('12','materiali ferrosi'),('121','il mio cazzo'),('13','ferro');
 /*!40000 ALTER TABLE `category` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -109,4 +109,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-21 10:39:12
+-- Dump completed on 2023-05-21 11:30:32

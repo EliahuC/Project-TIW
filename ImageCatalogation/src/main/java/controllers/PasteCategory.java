@@ -103,9 +103,26 @@ public class PasteCategory extends HttpServlet {
 		
 		String newDestination=category.getNewID(destination);
 		if(newDestination==null)
+		{
 			newDestination=String.valueOf(Long.parseLong(destination)-1);
-		else
+			/*String support=null;
+			String support2=null;
+			
+			
+			support2=String.valueOf(Integer.parseInt( String.valueOf(destination.charAt(destination.length()-1))));
+			support=destination.substring(0, destination.length()-2);
+			newDestination=support+support2;*/
+		}
+			
+		else {
 			newDestination=String.valueOf(Long.parseLong(newDestination)-1);
+			/*String support=null;
+			String support2=null;
+			support2=String.valueOf(Integer.parseInt( String.valueOf(newDestination.charAt(newDestination.length()-1))));
+			support=newDestination.substring(0, newDestination.length()-2);
+			newDestination=support+support2;*/
+		}
+			
 		for(Category c: copiedCategory.getSubparts().keySet()) {
 			putSubparts(c,newDestination,category,response);
 		}
@@ -132,10 +149,26 @@ public class PasteCategory extends HttpServlet {
 			return;
 		}
 		String destination=category.getNewID(newDestination);
-		if(destination==null)
+		if(destination==null) {
 			destination=String.valueOf(Long.parseLong(newDestination)-1);
-		else
+			/*String support=null;
+			String support2=null;
+			support2=String.valueOf(Integer.parseInt( String.valueOf(newDestination.charAt(newDestination.length()-1))));
+			support=newDestination.substring(0, newDestination.length()-2);
+			destination=support+support2;*/
+		}
+		
+			
+		else {
 			destination=String.valueOf(Long.parseLong(destination)-1);
+			/*String support=null;
+			String support2=null;
+			support2=String.valueOf(Integer.parseInt( String.valueOf(destination.charAt(destination.length()-1))));
+			support=destination.substring(0, destination.length()-2);
+			destination=support+support2;*/
+		}
+		
+		
 		for(Category c1: c.getSubparts().keySet()) {
 			putSubparts(c1,destination,category,response);
 		}

@@ -82,13 +82,14 @@ public class CategoryDAO {
      
      
 	public String getNewID(String fatherID) {
-		Category father=null;
+	     Category father;
 		try {
-		     father=checkCategory(fatherID);
+		 father=checkCategory(fatherID);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
 		}
+		
 		if(father.getSubparts().keySet().size()>8) {
 			return null;
 		}
