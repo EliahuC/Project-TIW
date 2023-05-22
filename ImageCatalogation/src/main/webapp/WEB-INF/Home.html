@@ -12,42 +12,43 @@
 	<h1>Welcome to the images collection</h1>
 	
 	<div th:if="${linkClicked}">
-		<form th:action="@{/PasteCategory}" method="GET">
+		<form action="#" th:action="@{/PasteCategory}" method="GET">
   			<ul>
-    		  <li th:each="category : ${allCategories}">
-    			<div th:if="${category.copied}">
-    			    <span th:text="${category.id}" style="color:#ff0000"></span>
-      				<span th:text="${category.name}" style="color:#ff0000"></span>
-    			</div>
-    			<div th:unless="${category.copied}">
-    			    <span th:text="${category.id}" ></span>
-      				<span th:text="${category.name}" ></span>
-    			    <span>
-        				<a th:href="@{/PasteCategory(categoryId=${category.id})}">Copia qui</a>
-      				</span> 
-    			</div>	
-    		  </li>
-  			</ul>
-		</form>
-	</div>
-	<div th:unless="${linkClicked}">
-		<form th:action="@{/CopyCategory}" method="GET">
-  			<ul>
-    			<li th:each="category : ${allCategories}">
-      				<span th:text="${category.id}"></span>
-      				<span th:text="${category.name}"></span>
-      				<span>
-        				<a th:href="@{/CopyCategory(categoryId=${category.id})}">Copia</a>
-      				</span> 
-    			</li>
-  			</ul>
+    	  		<li th:each="category : ${allCategories}">
+   					<div th:if="${category.copied}">
+   			    		<span th:text="${category.id}" style="color:#ff0000"></span>
+    					<span th:text="${category.name}" style="color:#ff0000"></span>
+    				</div>
+    				<div th:unless="${category.copied}">
+    		    		<span th:text="${category.id}" ></span>
+   						<span th:text="${category.name}" ></span>
+   			    		<span>
+        					<a th:href="@{/PasteCategory(categoryId=${category.id})}">Copia qui</a>
+      					</span> 
+    				</div>	
+   		  		</li>
+			</ul>
 		</form>
 	</div>
 	
+	<div th:unless="${linkClicked}">
+		<form action="#" th:action="@{/CopyCategory}" method="GET">
+  			<ul>
+    			<li th:each="category : ${allCategories}">
+    				<span th:text="${category.id}"></span>
+      				<span th:text="${category.name}"></span>
+      				<span>
+       					<a th:href="@{/CopyCategory(categoryId=${category.id})}">Copia</a>
+   					</span> 
+   				</li>
+   			</ul>
+   		</form>
+	</div>
+	
   	<div th:if="${linkClicked}">
-  	  <form th:action="@{/PasteCategory}" method="GET">
-		<a th:href="@{/PasteCategory(categoryId=0)}">Copia qui</a>
-	  </form>
+		<form action="#" th:action="@{/PasteCategory}" method="GET">
+			<a th:href="@{/PasteCategory(categoryId=0)}">Copia qui</a>
+		</form>
 	</div>
 
 	<div  class="formdiv">

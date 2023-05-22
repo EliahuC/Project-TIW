@@ -39,7 +39,10 @@ public class GoToHomePage extends HttpServlet {
     public GoToHomePage() {
         super();
     }
-    
+
+    /**
+     * Init method of the servlet
+     */
     public void init() throws ServletException {
     	try {
 			ServletContext context = getServletContext();
@@ -67,11 +70,10 @@ public class GoToHomePage extends HttpServlet {
     }
  
 	/**
+	 * Redirects to the home page
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		// If the user is not logged in (not present in session) redirect to the login -> PROBABLY USELESS
 		String loginpath = getServletContext().getContextPath() + "/index.html";
 		HttpSession session = request.getSession();
 		if (session.isNew() || session.getAttribute("user") == null) {
@@ -94,7 +96,6 @@ public class GoToHomePage extends HttpServlet {
 			return;
 		}
 		
-		// After the login, redirect the user to the home page
 		String path = "/WEB-INF/Home.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());

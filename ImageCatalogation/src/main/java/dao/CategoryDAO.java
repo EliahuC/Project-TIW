@@ -69,7 +69,11 @@ public class CategoryDAO {
 		}
 	}
 	
-	
+	/**
+	 * 
+	 * @param father
+	 * @throws SQLException
+	 */
 	public void setCopied(Category father) throws SQLException {
 		String query="SELECT child FROM relationships WHERE father=?";
 		
@@ -121,7 +125,7 @@ public class CategoryDAO {
      
 	 
      /**
-      * 
+      * Get the new id of the created child
       * @param fatherID
       * @return
      * @throws SQLException 
@@ -131,9 +135,9 @@ public class CategoryDAO {
 	    	 String query ="SELECT * FROM category WHERE LENGTH(id) = 1";
 	    	 try (PreparedStatement pstatement = con.prepareStatement(query);) {
 	 			try (ResultSet result = pstatement.executeQuery();) {
-	 				if (!result.isBeforeFirst()) 
+	 				if (!result.isBeforeFirst()) {
 	 					return null;
-	 				else {
+	 				}else {
 	 					ArrayList<String> n=new ArrayList<>();
 	 					while(result.next()) {
 	 						n.add(result.getString("id"));
@@ -143,9 +147,9 @@ public class CategoryDAO {
 	 						return null;
 	 					lastNumber++;
 	 					return String.valueOf(lastNumber);
-	 					}
 	 				}
-	     }
+	 			}
+	    	 }
 	     }
     	 Category father;
 		try {
@@ -163,7 +167,13 @@ public class CategoryDAO {
 	}
 	
 
- 	public void paste(String fatherId, String fatherNewId) throws SQLException {
+     /**
+      * pastes the subtree into the selected category
+      * @param fatherId 
+      * @param fatherNewId
+      * @throws SQLException
+      */
+ 	 public void paste(String fatherId, String fatherNewId) throws SQLException {
  		String query = "SELECT child FROM relationships WHERE father = ?";
  		
  		try (PreparedStatement pstatement = con.prepareStatement(query);) {
@@ -206,8 +216,8 @@ public class CategoryDAO {
 		}
 		return categories;
 	}
-
-
+	
+	
 	public List<Category> findAllCategories(ArrayList<String> allCopiedCategories) throws SQLException {
 		List<Category> categories = new ArrayList<Category>();
 		String query = "SELECT * FROM Category";

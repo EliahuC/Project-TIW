@@ -14,6 +14,13 @@ public class UserDAO {
 		this.con = connection;
 	}
 
+	/**
+	 * checks if the credentials are correct
+	 * @param username of the user
+	 * @param password of the user
+	 * @return the user
+	 * @throws SQLException
+	 */
 	public User checkCredentials(String username, String password) throws SQLException {
 		String query = "SELECT  id, username, name, surname FROM user  WHERE username = ? AND password =?";
 		try (PreparedStatement pstatement = con.prepareStatement(query);) {

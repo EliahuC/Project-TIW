@@ -38,6 +38,10 @@ public class CheckLogin extends HttpServlet {
         super();
     }
     
+
+    /**
+     * Init method of the servlet
+     */
     public void init() throws ServletException {
     	try {
 			ServletContext context = getServletContext();
@@ -68,6 +72,7 @@ public class CheckLogin extends HttpServlet {
     
 	
 	/**
+	 * If the credentials are correct, go to the home page
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -98,7 +103,7 @@ public class CheckLogin extends HttpServlet {
 		}
 	}
 	
-	
+	@Override
 	public void destroy() {
 		try {
 			if (connection != null) {

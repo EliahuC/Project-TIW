@@ -14,8 +14,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -34,12 +32,14 @@ public class CopyCategory extends HttpServlet {
 	private Connection connection;
 	private Category copiedCategory;
 	
+	
     /**
      * @see HttpServlet#HttpServlet()
      */
     public CopyCategory() {
         super();
     }
+    
     
     /**
      * Init method of the servlet
@@ -102,7 +102,7 @@ public class CopyCategory extends HttpServlet {
 		try {
 			copiedCategory = category.checkCategory(fatherID);
 			ArrayList<String> allCopiedCategories=new ArrayList<>();
-			getAllCopied(copiedCategory,allCopiedCategories);
+			getAllCopied(copiedCategory, allCopiedCategories);
 			categories = category.findAllCategories(allCopiedCategories);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -111,8 +111,6 @@ public class CopyCategory extends HttpServlet {
 			return;
 		}
 
-		
-		
 		String path = "/WEB-INF/Home.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
@@ -122,15 +120,18 @@ public class CopyCategory extends HttpServlet {
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 	
-	private void getAllCopied(Category copiedCategory2,ArrayList<String> allCopiedCategories) {
+	/**
+	 * 
+	 * @param copiedCategory2
+	 * @param allCopiedCategories
+	 */
+	private void getAllCopied(Category copiedCategory2, ArrayList<String> allCopiedCategories) {
 		allCopiedCategories.add(copiedCategory2.getId());
+		
 		for(Category c:copiedCategory2.getSubparts().keySet()) {
 			getAllCopied(c,allCopiedCategories);
 		}
 	}
-
-
-		
 	
 
 	@Override

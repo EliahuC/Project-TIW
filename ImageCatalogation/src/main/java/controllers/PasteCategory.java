@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -15,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
@@ -68,6 +66,7 @@ public class PasteCategory extends HttpServlet {
     }
 
     /**
+     * Pastes the category and its subtree into a selected father calling createCategory
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -91,7 +90,7 @@ public class PasteCategory extends HttpServlet {
 		}
 		
 		CategoryDAO category= new CategoryDAO(connection);
-		List<Category> categories = null;
+		//List<Category> categories = null;
 		String copiedCategoryNewId = new String();
 		
 		try {
@@ -105,99 +104,12 @@ public class PasteCategory extends HttpServlet {
 			return;
 		}
 		
-		/*String newDestination = category.getNewID(destination);
-		if(newDestination==null)
-		{
-			char lastDigit = destination.charAt(destination.length() - 1);
-			int lastDigitValue = Character.getNumericValue(lastDigit);
-			lastDigitValue--;
-			char newLastDigit = Character.forDigit(lastDigitValue, 10);
-			newDestination = destination.substring(0, destination.length() - 1) + newLastDigit;
-
-
-			//newDestination=String.valueOf(Long.parseLong(destination)-1);
-			//String support=null;
-			//String support2=null;
-			
-			
-			//support2=String.valueOf(Integer.parseInt( String.valueOf(destination.charAt(destination.length()-1))));
-			//support=destination.substring(0, destination.length()-2);
-			//newDestination=support+support2;
-		}
-			
-		else {
-			char lastDigit = newDestination.charAt(newDestination.length() - 1);
-			int lastDigitValue = Character.getNumericValue(lastDigit);
-			lastDigitValue--;
-			char newLastDigit = Character.forDigit(lastDigitValue, 10);
-			newDestination = newDestination.substring(0, newDestination.length() - 1) + newLastDigit;
-
-			//newDestination=String.valueOf(Long.parseLong(newDestination)-1);
-			//String support=null;
-			//String support2=null;
-			//support2=String.valueOf(Integer.parseInt( String.valueOf(newDestination.charAt(newDestination.length()-1))));
-			//support=newDestination.substring(0, newDestination.length()-2);
-			//newDestination=support+support2;
-		}
-			
-		for(Category c: copiedCategory.getSubparts().keySet()) {
-			putSubparts(c,newDestination,category,response);
-		}*/
-		
         //rimozione variabile storeata
 	    this.getServletConfig().getServletContext().removeAttribute("copiedCategory");
 	    String ctxpath = getServletContext().getContextPath();
 		 String path = ctxpath + "/GoToHomePage";
 		 response.sendRedirect(path);
 	}
-
-	
-	/*private void putSubparts(Category c, String newDestination,CategoryDAO category,HttpServletResponse response) throws IOException {
-		try {
-	        category.createCategory(c.getName(),newDestination);	
-		} catch (Exception e) {
-			e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"CANNOT CREATE A NEW CATEGORY");
-			return;
-		}
-		
-		String destination=category.getNewID(newDestination);
-		
-		if(destination==null) {
-			char lastDigit = newDestination.charAt(newDestination.length() - 1);
-			int lastDigitValue = Character.getNumericValue(lastDigit);
-			lastDigitValue--;
-			char newLastDigit = Character.forDigit(lastDigitValue, 10);
-			destination = newDestination.substring(0, newDestination.length() - 1) + newLastDigit;
-
-			//destination=String.valueOf(Long.parseLong(newDestination)-1);
-			//String support=null;
-			//String support2=null;
-			//support2=String.valueOf(Integer.parseInt( String.valueOf(newDestination.charAt(newDestination.length()-1))));
-			//support=newDestination.substring(0, newDestination.length()-2);
-			//destination=support+support2;
-		}	
-		else {
-			char lastDigit = destination.charAt(destination.length() - 1);
-			int lastDigitValue = Character.getNumericValue(lastDigit);
-			lastDigitValue--;
-			char newLastDigit = Character.forDigit(lastDigitValue, 10);
-			destination = destination.substring(0, destination.length() - 1) + newLastDigit;
-
-			//destination=String.valueOf(Long.parseLong(destination)-1);
-			//String support=null;
-			//String support2=null;
-			//support2=String.valueOf(Integer.parseInt( String.valueOf(destination.charAt(destination.length()-1))));
-			//support=destination.substring(0, destination.length()-2);
-			//destination=support+support2;
-		}
-		
-		
-		for(Category c1: c.getSubparts().keySet()) {
-			putSubparts(c1,destination,category,response);
-		}
-	}*/
 	
 	
 	@Override

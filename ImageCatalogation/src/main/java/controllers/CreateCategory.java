@@ -33,41 +33,40 @@ public class CreateCategory extends HttpServlet {
      */
     public CreateCategory() {
         super();
-        
     }
    
-    	public void init() throws ServletException {
-        	try {
-    			ServletContext context = getServletContext();
-    			String driver = context.getInitParameter("dbDriver");
-    			String url = context.getInitParameter("dbUrl");
-    			String user = context.getInitParameter("dbUser");
-    			String password = context.getInitParameter("dbPassword");
-    			Class.forName(driver);
-    			connection = DriverManager.getConnection(url, user, password);
+
+    /**
+     * Init method of the servlet
+     */
+    public void init() throws ServletException {
+        try {
+        	ServletContext context = getServletContext();
+   			String driver = context.getInitParameter("dbDriver");
+    		String url = context.getInitParameter("dbUrl");
+    		String user = context.getInitParameter("dbUser");
+    		String password = context.getInitParameter("dbPassword");
+   			Class.forName(driver);
+   			connection = DriverManager.getConnection(url, user, password);
     			
-    		} catch (ClassNotFoundException e) {
-    			e.printStackTrace();
-    			throw new UnavailableException("Can't load database driver");
-    		} catch (SQLException e) {
-    			e.printStackTrace();
-    			throw new UnavailableException("Couldn't get db connection");
-    		}
+    	} catch (ClassNotFoundException e) {
+    		e.printStackTrace();
+   			throw new UnavailableException("Can't load database driver");
+   		} catch (SQLException e) {
+   			e.printStackTrace();
+    		throw new UnavailableException("Couldn't get db connection");
+    	}
         	
-        	ServletContext servletContext = getServletContext();
-        	ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
-        	templateResolver.setTemplateMode(TemplateMode.HTML);
-        	this.templateEngine = new TemplateEngine();
-    		this.templateEngine.setTemplateResolver(templateResolver);
-    		templateResolver.setSuffix(".html");
-        }
-
-    	//doGet : Useless
-    	//doPost: Form to ask to the user the category name and the category father
-
+        ServletContext servletContext = getServletContext();
+       	ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
+       	templateResolver.setTemplateMode(TemplateMode.HTML);
+       	this.templateEngine = new TemplateEngine();
+   		this.templateEngine.setTemplateResolver(templateResolver);
+   		templateResolver.setSuffix(".html");
+    }
     
-
 	/**
+	 * Creates a new category with the selected father
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
