@@ -35,11 +35,17 @@
 		<form action="#" th:action="@{/CopyCategory}" method="GET">
   			<ul>
     			<li th:each="category : ${allCategories}">
-    				<span th:text="${category.id}"></span>
+    			<div th:if="${category.alreadyCopied}">
+    			    <span th:text="${category.id}"></span>
+      				<span th:text="${category.name}"></span>
+    			</div>
+    			<div th:unless="${category.alreadyCopied}">
+    			    <span th:text="${category.id}"></span>
       				<span th:text="${category.name}"></span>
       				<span>
        					<a th:href="@{/CopyCategory(categoryId=${category.id})}">Copia</a>
    					</span> 
+   				</div>
    				</li>
    			</ul>
    		</form>

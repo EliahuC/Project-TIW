@@ -210,6 +210,9 @@ public class CategoryDAO {
 					Category category = new Category();
 					category.setId(result.getString("id"));
 					category.setName(result.getString("name"));
+					if(alreadyCopied.contains(category.getId())){
+						category.setAlreadyCopied(true);
+					}
 					categories.add(category);
 				}
 			}
