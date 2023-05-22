@@ -108,12 +108,14 @@ public class CategoryDAO {
     		 pstatement.setString(2, name);
     		 pstatement.executeUpdate();
     	 }
+    	 if(!id.equals("0")) {
     	 query=
     			 "INSERT into db_images.relationships(father,child) VALUES(?,?)";
     	 try(PreparedStatement pstatement = con.prepareStatement(query);){
     		 pstatement.setString(1, idfather);
     		 pstatement.setString(2, idchild);
     		 pstatement.executeUpdate();
+    	 }
     	 }
     }
      
@@ -125,7 +127,7 @@ public class CategoryDAO {
      * @throws SQLException 
       */
      public String getNewID(String fatherID) throws SQLException {
-	     if(fatherID=="0") {
+	     if(fatherID.equals("0")) {
 	    	 String query ="SELECT * FROM category WHERE LENGTH(id) = 1";
 	    	 try (PreparedStatement pstatement = con.prepareStatement(query);) {
 	 			try (ResultSet result = pstatement.executeQuery();) {

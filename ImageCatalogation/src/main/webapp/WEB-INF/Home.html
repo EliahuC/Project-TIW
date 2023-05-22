@@ -14,17 +14,22 @@
 	<div th:if="${linkClicked}">
 		<form th:action="@{/PasteCategory}" method="GET">
   			<ul>
-    			<li th:each="category : ${allCategories}">
-      				<span th:text="${category.id}"></span>
-      				<span th:text="${category.name}"></span>
-      				<span>
+    		  <li th:each="category : ${allCategories}">
+    			<div th:if="${category.copied}">
+    			    <span th:text="${category.id}" style="color:#ff0000"></span>
+      				<span th:text="${category.name}" style="color:#ff0000"></span>
+    			</div>
+    			<div th:unless="${category.copied}">
+    			    <span th:text="${category.id}" ></span>
+      				<span th:text="${category.name}" ></span>
+    			    <span>
         				<a th:href="@{/PasteCategory(categoryId=${category.id})}">Copia qui</a>
       				</span> 
-    			</li>
+    			</div>	
+    		  </li>
   			</ul>
 		</form>
 	</div>
-
 	<div th:unless="${linkClicked}">
 		<form th:action="@{/CopyCategory}" method="GET">
   			<ul>
@@ -38,7 +43,12 @@
   			</ul>
 		</form>
 	</div>
-
+	
+  	<div th:if="${linkClicked}">
+  	  <form th:action="@{/PasteCategory}" method="GET">
+		<a th:href="@{/PasteCategory(categoryId=0)}">Copia qui</a>
+	  </form>
+	</div>
 
 	<div  class="formdiv">
 		<p>Complete the form to create a product</p>
