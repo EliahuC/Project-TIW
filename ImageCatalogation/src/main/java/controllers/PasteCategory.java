@@ -95,7 +95,6 @@ public class PasteCategory extends HttpServlet {
 		String copiedCategoryNewId = new String();
 		
 		try {
-			categories = category.findAllCategories();
 			copiedCategoryNewId = category.getNewID(destination);
 	        category.createCategory(copiedCategory.getName(), destination);
 	        category.paste(copiedCategory.getId(), copiedCategoryNewId);

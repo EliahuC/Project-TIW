@@ -14,7 +14,7 @@ import beans.Category;
  */
 public class CategoryDAO {
 	private Connection con;
-	
+	private final static ArrayList<String> alreadyCopied=new ArrayList<>();
 	public CategoryDAO(Connection connection){
 		this.con=connection;
 	}
@@ -122,9 +122,30 @@ public class CategoryDAO {
       * 
       * @param fatherID
       * @return
+     * @throws SQLException 
       */
-     public String getNewID(String fatherID) {
-	     Category father;
+     public String getNewID(String fatherID) throws SQLException {
+	     if(fatherID=="0") {
+	    	 String query ="SELECT * FROM category WHERE LENGTH(id) = 1";
+	    	 try (PreparedStatement pstatement = con.prepareStatement(query);) {
+	 			try (ResultSet result = pstatement.executeQuery();) {
+	 				if (!result.isBeforeFirst()) 
+	 					return null;
+	 				else {
+	 					ArrayList<String> n=new ArrayList<>();
+	 					while(result.next()) {
+	 						n.add(result.getString("id"));
+	 					}
+	 					int lastNumber=Integer.parseInt(n.get(n.size()-1));
+	 					if(lastNumber==9)
+	 						return null;
+	 					lastNumber++;
+	 					return String.valueOf(lastNumber);
+	 					}
+	 				}
+	     }
+	     }
+    	 Category father;
 		try {
 		 father=checkCategory(fatherID);
 		} catch (SQLException e) {
@@ -181,6 +202,30 @@ public class CategoryDAO {
 				}
 			}
 		}
+		return categories;
+	}
+
+
+	public List<Category> findAllCategories(ArrayList<String> allCopiedCategories) throws SQLException {
+		List<Category> categories = new ArrayList<Category>();
+		String query = "SELECT * FROM Category";
+		try (PreparedStatement pstatement = con.prepareStatement(query);){
+			try (ResultSet result = pstatement.executeQuery();) {
+				while (result.next()) {
+					Category category = new Category();
+					category.setId(result.getString("id"));
+					category.setName(result.getString("name"));
+					if(allCopiedCategories.contains(category.getId())) {
+						category.setCopied(true);
+					}
+					if(alreadyCopied.contains(category.getId())){
+						category.setAlreadyCopied(true);
+					}
+					categories.add(category);
+				}
+			}
+		}
+		alreadyCopied.addAll(allCopiedCategories);
 		return categories;
 	}
 }

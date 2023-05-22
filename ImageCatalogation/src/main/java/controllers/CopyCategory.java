@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -99,8 +100,10 @@ public class CopyCategory extends HttpServlet {
 		List<Category> categories = null;
 		
 		try {
-			categories = category.findAllCategories();
 			copiedCategory = category.checkCategory(fatherID);
+			ArrayList<String> allCopiedCategories=new ArrayList<>();
+			getAllCopied(copiedCategory,allCopiedCategories);
+			categories = category.findAllCategories(allCopiedCategories);
 		} catch (Exception e) {
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
@@ -108,6 +111,8 @@ public class CopyCategory extends HttpServlet {
 			return;
 		}
 
+		
+		
 		String path = "/WEB-INF/Home.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
@@ -117,6 +122,17 @@ public class CopyCategory extends HttpServlet {
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 	
+	private void getAllCopied(Category copiedCategory2,ArrayList<String> allCopiedCategories) {
+		allCopiedCategories.add(copiedCategory2.getId());
+		for(Category c:copiedCategory2.getSubparts().keySet()) {
+			getAllCopied(c,allCopiedCategories);
+		}
+	}
+
+
+		
+	
+
 	@Override
 	public void destroy() {
 		if (connection != null) {
