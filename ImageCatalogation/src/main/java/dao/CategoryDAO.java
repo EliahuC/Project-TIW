@@ -178,7 +178,11 @@ public class CategoryDAO {
  		}
  	}
  	
-	
+ 	 /**
+ 	  * creates a list with all categories in the database
+ 	  * @return the list
+ 	  * @throws SQLException
+ 	  */
 	public List<Category> findAllCategories() throws SQLException{
 		List<Category> categories = new ArrayList<Category>();
 		String query = "SELECT * FROM Category";
@@ -198,7 +202,12 @@ public class CategoryDAO {
 		return categories;
 	}
 	
-	
+	/**
+	 * Creates a list with all categories in the database and assigns them the value "true" in their booleans if conditions are met
+	 * @param allCopiedCategories containing all categories that has been copied
+	 * @return the list
+	 * @throws SQLException
+	 */
 	public List<Category> findAllCategories(ArrayList<String> allCopiedCategories) throws SQLException {
 		List<Category> categories = new ArrayList<Category>();
 		String query = "SELECT * FROM Category";
@@ -223,9 +232,9 @@ public class CategoryDAO {
 	}
 
 	/**
-	 * 
-	 * @param copiedCategory2
-	 * @param allCopiedCategories
+	 * Add all categories that have been copied to allCopiedCategory
+	 * @param copiedCategory 
+	 * @param allCopiedCategories contains all categories that have been copied
 	 */
 	public void getAllCopied(Category copiedCategory, ArrayList<String> allCopiedCategories) {
 		allCopiedCategories.add(copiedCategory.getId());
