@@ -102,7 +102,7 @@ public class CopyCategory extends HttpServlet {
 		try {
 			copiedCategory = category.checkCategory(fatherID);
 			ArrayList<String> allCopiedCategories=new ArrayList<>();
-			getAllCopied(copiedCategory, allCopiedCategories);
+			category.getAllCopied(copiedCategory, allCopiedCategories);
 			categories = category.findAllCategories(allCopiedCategories);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -118,19 +118,6 @@ public class CopyCategory extends HttpServlet {
 		ctx.setVariable("linkClicked", true);
 		request.getSession().setAttribute("copiedCategory", copiedCategory);
 		templateEngine.process(path, ctx, response.getWriter());
-	}
-	
-	/**
-	 * 
-	 * @param copiedCategory2
-	 * @param allCopiedCategories
-	 */
-	private void getAllCopied(Category copiedCategory2, ArrayList<String> allCopiedCategories) {
-		allCopiedCategories.add(copiedCategory2.getId());
-		
-		for(Category c:copiedCategory2.getSubparts().keySet()) {
-			getAllCopied(c,allCopiedCategories);
-		}
 	}
 	
 

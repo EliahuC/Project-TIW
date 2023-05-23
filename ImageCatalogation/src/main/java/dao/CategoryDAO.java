@@ -70,28 +70,6 @@ public class CategoryDAO {
 	}
 	
 	/**
-	 * 
-	 * @param father
-	 * @throws SQLException
-	 */
-	public void setCopied(Category father) throws SQLException {
-		String query="SELECT child FROM relationships WHERE father=?";
-		
-		try (PreparedStatement pstatement = con.prepareStatement(query);) {
-			pstatement.setString(1, father.getId());
-			try (ResultSet result = pstatement.executeQuery();) {
-				if (!result.isBeforeFirst())
-					return;
-				while(result.next()) {
-					father.setCopied(true);
-					//TODO : chiama setCopied per ogni figlio
-			    }
-			}
-		}
-	}
-	
-	
-	/**
 	 * Method that is used to create a new category or to paste an existing category into another one
 	 * @param name of the category to create/paste
 	 * @param id of the father category
@@ -242,6 +220,19 @@ public class CategoryDAO {
 		}
 		alreadyCopied.addAll(allCopiedCategories);
 		return categories;
+	}
+
+	/**
+	 * 
+	 * @param copiedCategory2
+	 * @param allCopiedCategories
+	 */
+	public void getAllCopied(Category copiedCategory, ArrayList<String> allCopiedCategories) {
+		allCopiedCategories.add(copiedCategory.getId());
+		
+		for(Category c:copiedCategory.getSubparts().keySet()) {
+			getAllCopied(c,allCopiedCategories);
+		}
 	}
 }
 
