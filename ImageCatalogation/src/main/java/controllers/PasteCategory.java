@@ -51,10 +51,10 @@ public class PasteCategory extends HttpServlet {
 
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			throw new UnavailableException("Can't load database driver");
+			throw new UnavailableException("ERROR WITH DATABASE DRIVERS");
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new UnavailableException("Couldn't get db connection");
+			throw new UnavailableException("DATABASE CONNECTION ERROR");
 		}
     	
     	ServletContext servletContext = getServletContext();
@@ -94,16 +94,26 @@ public class PasteCategory extends HttpServlet {
 		String copiedCategoryNewId = new String();
 		
 		try {
+			connection.setAutoCommit(false);
 			copiedCategoryNewId = category.getNewID(destination);
 	        category.createCategory(copiedCategory.getName(), destination);
 	        category.paste(copiedCategory.getId(), copiedCategoryNewId);
 		} catch (Exception e) {
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 					"CANNOT CREATE A NEW CATEGORY");
 			return;
 		}
-		
+		try {
+			connection.commit();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
         //rimozione variabile storeata
 	    this.getServletConfig().getServletContext().removeAttribute("copiedCategory");
 	    String ctxpath = getServletContext().getContextPath();

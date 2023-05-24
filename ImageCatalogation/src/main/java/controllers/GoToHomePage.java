@@ -55,10 +55,10 @@ public class GoToHomePage extends HttpServlet {
 
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			throw new UnavailableException("Can't load database driver");
+			throw new UnavailableException("ERROR WITH DATABASE DRIVERS");
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new UnavailableException("Couldn't get db connection");
+			throw new UnavailableException("DATABASE CONNECTION ERROR ");
 		}
     	
     	ServletContext servletContext = getServletContext();
@@ -92,7 +92,7 @@ public class GoToHomePage extends HttpServlet {
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error");
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "DATABASE ERROR: CANNOT FIND THE CATEGORIES");
 			return;
 		}
 		

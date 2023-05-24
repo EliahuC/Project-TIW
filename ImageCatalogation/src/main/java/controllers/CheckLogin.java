@@ -54,10 +54,10 @@ public class CheckLogin extends HttpServlet {
 			
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			throw new UnavailableException("Can't load database driver");
+			throw new UnavailableException("PROBLEMS WITH THE DRIVERS");
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new UnavailableException("Couldn't get db connection");
+			throw new UnavailableException("DATABASE ERROR WITH THE CONNECTION");
 		}
     	
     	ServletContext servletContext = getServletContext();
@@ -86,7 +86,7 @@ public class CheckLogin extends HttpServlet {
 			user = userDAO.checkCredentials(username, password);
 		} catch (SQLException e) {
 			// throw new ServletException(e); for debugging
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Failure in database credential checking");
+			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "DATABASE CREDENTIAL ERROR");
  		}
 		
 		String path;

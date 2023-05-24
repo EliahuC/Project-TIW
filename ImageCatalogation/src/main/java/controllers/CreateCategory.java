@@ -51,10 +51,10 @@ public class CreateCategory extends HttpServlet {
     			
     	} catch (ClassNotFoundException e) {
     		e.printStackTrace();
-   			throw new UnavailableException("Can't load database driver");
+   			throw new UnavailableException("ERROR WITH THE DATABASE DRIVERS");
    		} catch (SQLException e) {
    			e.printStackTrace();
-    		throw new UnavailableException("Couldn't get db connection");
+    		throw new UnavailableException("DATABASE CONNECTION ERROR");
     	}
         	
         ServletContext servletContext = getServletContext();
