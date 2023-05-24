@@ -9,37 +9,31 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.annotation.MultipartConfig;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import beans.User;
 import dao.UserDAO;
-
-
-/**
- * Servlet implementation class CheckLogin
- */
 @WebServlet("/CheckLogin")
+@MultipartConfig
 public class CheckLogin extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private Connection connection = null;
 	private TemplateEngine templateEngine;
-	private Connection connection;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public CheckLogin() {
-        super();
-    }
-    
 
-    /**
+	public CheckLogin() {
+		super();
+	}
+
+	 /**
      * Init method of the servlet
      */
     public void init() throws ServletException {
@@ -54,10 +48,10 @@ public class CheckLogin extends HttpServlet {
 			
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			throw new UnavailableException("Can't load database driver");
+			throw new UnavailableException("PROBLEMS WITH THE DRIVERS");
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new UnavailableException("Couldn't get db connection");
+			throw new UnavailableException("DATABASE ERROR WITH THE CONNECTION");
 		}
     	
     	ServletContext servletContext = getServletContext();
@@ -68,42 +62,43 @@ public class CheckLogin extends HttpServlet {
 		templateResolver.setSuffix(".html");
     }
 
-    //In this servlet doGet is useless, because it'll receive only HTTP POST requests
-    
-	
-	/**
-	 * If the credentials are correct, go to the home page
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String username = request.getParameter("username");
-		String password = request.getParameter("password");
-		System.out.println(username + " " + password);
-		UserDAO userDAO = new UserDAO(connection);
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// obtain and escape params
+		String usrn = null;
+		String pwd = null;
+		usrn = StringEscapeUtils.escapeJava(request.getParameter("username"));
+		pwd = StringEscapeUtils.escapeJava(request.getParameter("pwd"));
+		if (usrn == null || pwd == null || usrn.isEmpty() || pwd.isEmpty() ) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().println("Credentials must be not null");
+			return;
+		}
+		// query db to authenticate for user
+		UserDAO userDao = new UserDAO(connection);
 		User user = null;
-		
 		try {
-			user = userDAO.checkCredentials(username, password);
+			user = userDao.checkCredentials(usrn, pwd);
 		} catch (SQLException e) {
-			// throw new ServletException(e); for debugging
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Failure in database credential checking");
- 		}
-		
-		String path;
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println("Internal server error, retry later");
+			return;
+		}
+
+		// If the user exists, add info to the session and go to home page, otherwise
+		// return an error status code and message
 		if (user == null) {
-			ServletContext servletContext = getServletContext();
-			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-			ctx.setVariable("errorMsg", "Incorrect username or password");
-			path = "/index.html";
-			templateEngine.process(path, ctx, response.getWriter());
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.getWriter().println("Incorrect credentials");
 		} else {
 			request.getSession().setAttribute("user", user);
-			path = getServletContext().getContextPath() + "/GoToHomePage";
-			response.sendRedirect(path);
+			response.setStatus(HttpServletResponse.SC_OK);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().println(usrn);
 		}
 	}
-	
-	@Override
+
 	public void destroy() {
 		try {
 			if (connection != null) {
@@ -113,6 +108,4 @@ public class CheckLogin extends HttpServlet {
 			e.printStackTrace();
 		}
 	}
-
-
 }
