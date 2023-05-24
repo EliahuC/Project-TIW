@@ -2,8 +2,8 @@
 Progetto realizzato per il corso di Tecnologie Informatiche Del Web del Politecnico di Milano nell'anno 2023
 
 ## CREDITS  
-Eliahu Itamar Cohen (codice persona: 10704321)  
-Lorenzo Fonnesu (codice persona : 10740840)
+[Eliahu Itamar Cohen](https://github.com/EliahuC)    
+[Lorenzo Fonnesu](https://github.com/Fonzy-01)
  
 # TRACCIA : Catalogazione di immagini 
 
