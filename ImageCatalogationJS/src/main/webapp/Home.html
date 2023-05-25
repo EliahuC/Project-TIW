@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="ISO-8859-1">
+<script src="home.js" charset="UTF-8" defer></script>
+<script src="utils.js" charset="UTF-8" defer></script>
+<title>Image collection</title>
+</head> 
+
+
+<body>
+	
+	<div>
+		<ul class="header">
+			<li><a class="logout-button" href="Logout">Logout</a></li>
+			<li><b><a class="user-header" id="id_user"></a></b></li>
+		</ul>
+	</div>
+	
+	<div id="id_alert" class="error-msg"></div>
+	
+	<h1>Catalogo di immagini</h1>
+	<hr>
+	
+	<div class="container" id="saveBtnCol">
+		<button id="id_savebtn">Salva</button>
+	</div>
+	
+	<div class="container">
+		
+		<div class="column">
+			<table id="id_listcontainer">
+				<thead></thead>
+				<tbody id="id_listcontainerbody"></tbody>
+			</table>
+		</div>
+		
+		<div class="column formbox">
+			<h1>Crea una nuova categoria</h1>
+			<div class="error-msg" id="id_formalert"></div>
+			<form action="#" autocomplete="off" id="id_form">
+				<p>
+					<input type="text" id="id_name" name="name" required>
+				</p>
+				<p>
+					<label>Seleziona il padre:</label>
+					<select id="id_father" name="fatherId"></select>
+				</p>
+				<p>
+					<input type="button" value="Crea" class="submit" name="submit">
+				</p>
+			</form>
+		</div>
+		
+	</div>
+	
+	<div class="modal" id="id_modal">
+  	<div class="modal-content">
+    	<span class="close">&times;</span>
+    	<p id="id_modaltext">Vuoi confermare le modifiche?</p>
+    	<button type="button" id="id_cancelbtn">Cancella</button>
+    	<button type="button" class="confirm-btn" id="id_confirmbtn">Conferma</button>
+  	</div>
+	</div>
+  	
+  	<div class="modal" id="id_afterupdatemodal">
+  	<div class="modal-content">
+    	<span class="close">&times;</span>
+    	<p id="id_modaltext">Le modifiche sono state salvate</p>
+    	<button type="button">Ok</button>
+  	</div>
+  	</div>
+
+</body>
+</html>
+
