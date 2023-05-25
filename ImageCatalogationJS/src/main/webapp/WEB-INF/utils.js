@@ -1,3 +1,4 @@
+
 function makeCall(method, url, formElement, cback, reset = true) {
     var req = new XMLHttpRequest(); // visible by closure
     req.onreadystatechange = function() {

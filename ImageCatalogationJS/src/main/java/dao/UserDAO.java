@@ -36,6 +36,8 @@ public class UserDAO {
 					user.setUsername(result.getString("username"));
 					user.setName(result.getString("name"));
 					user.setSurname(result.getString("surname"));
+					System.out.println(username + " " + password);
+					System.out.println(user.getUsername() + ": " + user.getName() + " " + user.getSurname());
 					return user;
 				}
 			}

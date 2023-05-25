@@ -2,35 +2,26 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="ISO-8859-1">
-<script src="utils.js" charset="utf-8" defer></script>
-<script src="login.js" charset="utf-8" defer></script>
+<title>Login page</title>
 <style> body{
 background: #000080;
 }
 </style>
-<title>Login page</title>
+<script src="utils.js" charset="utf-8" defer></script>
+<script src="login.js" charset="utf-8" defer></script>
 </head>
+
 <body>
-
-
-	<div id="loginPage">
-		<div class="formbox">
-		
 	<h1 align="center" style="color:#ff0000"><font size=10> WELCOME TO THE IMAGE CATALOGATION WEBSITE</font></h1>
 	<h2 align="left" style="color:#ff0000"><font size="7">Please login to join our site</font></h2>
 
-	    <form class="loginForm" action="#" autocomplete="off">
-		     <p style ="color:#00ff00;"><font size="4">Username:</font></p>
-             <input type="text" name="username" placeholder="Username" required> <br>
-		     <p style ="color:#00ff00;"><font size="4">Password:</font></p>
-		     <input type="password" name="password" placeholder="Password" required><br>
-		     <input id="loginbutton" class="login-button" type="button" value="Login">
-		<p id="errormessage" class="error-msg" style="color:#ff0000"></p>
-		
+	<form action="#">
+		     <p style ="color:#00ff00;"><font size="4">UserName:</font></p> <input type="text" name="username" required> <br>
+		     <p style ="color:#00ff00;"><font size="4">Password:</font></p><input type="password" name="password" required><br>
+		     <input id="loginbutton" type="button" value="login">
+			 <p th:text=" ${errorMsg}" style="color:#ff0000"></p>
 	    </form>
-	    
-	    	</div>
-	</div>
+	
 <p><br></p>
 <p><br></p>
 <p><br></p>
