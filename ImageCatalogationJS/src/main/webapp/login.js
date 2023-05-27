@@ -17,7 +17,10 @@
                         switch (req.status){
 
                             case 200: //OK
-                                sessionStorage.setItem('username', message);
+                                var user = JSON.parse(message);
+                                sessionStorage.setItem("username", user.username);
+                                sessionStorage.setItem("name", user.name);
+                                sessionStorage.setItem("surname", user.surname);
                                 window.location.href = "Home.html";
                                 break;
 
