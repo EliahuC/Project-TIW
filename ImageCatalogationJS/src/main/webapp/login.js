@@ -18,7 +18,7 @@
 
                             case 200: //OK
                                 sessionStorage.setItem('username', message);
-                                window.location.href = "home.html";
+                                window.location.href = "Home.html";
                                 break;
 
                             case 400: //Bad request
