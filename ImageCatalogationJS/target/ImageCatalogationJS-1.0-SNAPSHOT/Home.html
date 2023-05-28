@@ -2,48 +2,84 @@
 <html>
 <head>
 	<meta charset="ISO-8859-1">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Image collection</title>
 	<script src="utils.js" charset="utf-8" defer></script>
 	<script src="home.js" charset="utf-8" defer></script>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+	<style>
+		/* Set height of the grid so .sidenav can be 100% (adjust if needed) */
+		.row.content {height: 1500px}
+
+		/* Set gray background color and 100% height */
+		.sidenav {
+			background-color: #f1f1f1;
+			height: 100%;
+		}
+
+		/* Set black background color, white text and some padding */
+		footer {
+			background-color: #555;
+			color: white;
+			padding: 15px;
+		}
+
+		/* On small screens, set height to 'auto' for sidenav and grid */
+		@media screen and (max-width: 767px) {
+			.sidenav {
+				height: auto;
+				padding: 15px;
+			}
+			.row.content {height: auto;}
+		}
+	</style>
 
 </head> 
 
 
 <body>
 
-	<h1>Welcome to the images collection</h1>
+	<div class="container-fluid">
+		<div class="row content">
 
-	<div>
-		<p><span id="username"></span></p>
+			<div class="col-sm-9">
+
+				<h1>Welcome to the images collection</h1>
+				<h4><small><span id="username"></span></small></h4>
+				<hr>
+				<ul id="allCategories">
+					<li>
+						<label> Qui ci sarà l'albero </label>
+					</li>
+				</ul>
+				<br><br>
+			</div>
+
+			<div class="col-sm-3 sidenav">
+				<br>
+				<h2>Wizard</h2>
+				<hr>
+				<h4>Create a new category:</h4>
+				<form id="creationWizard" action="#" autocomplete="off" >
+					<fieldset>
+
+						<p>Name: <input type="text" id="name" name="name" required /></p>
+
+						<label>Choose a father category:</label>
+						<select id="father" name="father"></select>
+
+						<p><input type="submit" class="btn btn-success" name="Create Category"></p>
+
+					</fieldset>
+				</form>
+			</div>
+		</div>
 	</div>
 
-	<div>
-		<ul id="allCategories">
-			<li>
-				<label> Qui ci sarà l'albero </label>
-			</li>
-		</ul>
-	</div>
+	<footer class="container-fluid">
+		<p>Footer Text</p>
+	</footer>
 
-	<div class="formdiv">
-		<p>Complete the form to create a category</p>
-		<form id="creationWizard" action="#" autocomplete="off" >
-			<fieldset>
-
-				<p>Name: <input type="text" id="name" name="name" required /></p>
-
-				<label>Choose a father category:</label>
-				<select id="father" name="father"></select>
-
-				<p><input type="submit" name="Create Category"></p>
-
-			</fieldset>
-		</form>
-
-
-
-	</div>
 </body>
 </html>
