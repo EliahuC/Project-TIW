@@ -36,7 +36,7 @@
                     if (req.readyState === 4) {
                         var message = req.responseText;
                         if (req.status === 200) {
-                            var categoryList = JSON.parse(req.responseText);
+                            var categoryList = JSON.parse(message);
                             categories = [...categoryList];
                             /*if (categories.length == 0) {
                                 self.alert.textContent = "Nessuna categoria";
@@ -67,6 +67,95 @@
         }
     }
 
+    function CategoryForm(formId, _selector, _alert) {
+        this.form = formId;
+        this.alert = _alert;
+        this.selector = _selector;
+
+        this.reset = function () {
+            this.form.reset();
+            this.selector.visibility = "hidden";
+            this.enable();
+        }
+
+       this.disable = function () {
+            this.form.querySelector("input[type='button'].submit").setAttribute("disabled", "true");
+            this.form.querySelector("input[type='text']").setAttribute("disabled", "true");
+            this.form.querySelector("select").setAttribute("disabled", "true");
+        }
+
+        this.enable = function () {
+            this.form.querySelector("input[type='button'].submit").removeAttribute("disabled");
+            this.form.querySelector("input[type='text']").removeAttribute("disabled");
+            this.form.querySelector("select").removeAttribute("disabled");
+        }
+
+        this.registerEvents = function (orchestrator) {
+            this.form.querySelector("input[type='button'].submit").addEventListener('click', (e) => {
+                if (this.form.checkValidity()) {
+                    var self = this;
+                    if (updateQueue.length == 0) {
+                        makeCall("POST", '/ImageCatalogationJS_war_exploded/CreateCategoryJS', e.target.closest("form"),
+                            function (req) {
+                                if (req.readyState == XMLHttpRequest.DONE) {
+                                    var message = req.responseText;
+                                    if (req.status == 200) {
+                                        self.alert.textContent = "";
+                                        orchestrator.refresh();
+                                    } else if (req.status == 403) {
+                                        window.location.href = req.getResponseHeader("Location");
+                                        window.sessionStorage.removeItem("username");
+                                    } else {
+                                        self.alert.textContent = message;
+                                        self.reset();
+                                    }
+                                }
+                            });
+                    } else {
+                        window.alert("Non puoi aggiungere una categoria prima di aver salvato le modifiche");
+                    }
+                } else {
+                    this.form.reportValidity();
+                }
+            })
+        }
+        this.show = function () {
+            var self = this;
+            makeCall("GET", '/ImageCatalogationJS_war_exploded/GetCategoriesJS', null,
+                function (req) {
+                    if (req.readyState == 4) {
+                        var message = req.responseText;
+                        if (req.status == 200) {
+                            var categories = JSON.parse(req.responseText);
+                            self.update(categories);
+                        } else if (req.status == 403) {
+                            window.location.href = req.getResponseHeader("Location");
+                            window.sessionStorage.removeItem("username");
+                        } else {
+                            self.alert.textContent = message;
+                        }
+                    }
+                });
+            this.enable();
+        }
+
+        this.update = function (arrayCategories) {
+            var option;
+            this.selector.innerHTML = ""; // empty the selection list
+            var self = this;
+            option = document.createElement("option");
+            option.text = "NONE (crea una nuova radice)";
+            option.value = -1;
+            self.selector.appendChild(option);
+            arrayCategories.forEach(function (category) {
+                option = document.createElement("option");
+                option.text = category.code + " " + category.name;
+                option.value = category.id;
+                self.selector.appendChild(option);
+            });
+            this.selector.style.visibility = "visible";
+        }
+    }
 
     function PageOrchestrator() {
 
@@ -82,6 +171,10 @@
                 document.getElementById("allCategories"));
             //categoriesList.registerEvents(this);
             categoriesList.show();
+
+            categoryForm = new CategoryForm(document.getElementById("id_form"),
+                document.getElementById("id_father"), formAlertContainer);
+            categoryForm.registerEvents(this);
 
             //creationWizard = new CreationWizard(
             //document.getElementById("creationWizard"),
