@@ -16,10 +16,14 @@
         this.name = _name;
         this.surname = _surname;
         this.show = function () {
-            messagecontainer.textContent = "Nice to see you again " + this.name + " " + this.surname;
+            messagecontainer.textContent = "Nice to see you again, " + this.name + " " + this.surname;
         }
     }
 
+    function CategoriesList(_listcontainer,_listcontainerbody,_savebtn){
+        this.allCategories=_listcontainer;
+
+    }
 
 
     function PageOrchestrator() {
