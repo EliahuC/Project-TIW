@@ -33,8 +33,8 @@ public class GetCategoriesJS extends HttpServlet{
         connection = ConnectionHandler.getConnection(getServletContext());
     }
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
-        List<Category> categories=new ArrayList<>();
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        List<Category> categories;
         CategoryDAO categoryDAO=new CategoryDAO(connection);
         try {
             categories=categoryDAO.findAllCategories();
@@ -50,7 +50,6 @@ public class GetCategoriesJS extends HttpServlet{
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(json);
-
     }
 
 
