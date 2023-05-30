@@ -1,7 +1,7 @@
 (function () {
 
-    let categoriesList,personalMessage, updateModal, creationForm, pageOrchestrator = new PageOrchestrator();
-    let oldName, newName;
+    let categoriesList,personalMessage,confirmCopy,saveCopy,creationForm, pageOrchestrator = new PageOrchestrator();
+    let oldName, newName,destination,startElement;
     let categories = [];
     let updateQueue = [];
 
@@ -97,6 +97,11 @@
             tree.forEach(function(category) {
                 var listItem = document.createElement("li");
                 listItem.textContent = category.id + " " + category.name;
+                listItem.setAttribute("draggable","true");
+                listItem.addEventListener("dragstart", dragStartHandler);
+                listItem.addEventListener("dragover", dragOverHandler);
+                listItem.addEventListener("dragleave", dragLeaveHandler);
+                listItem.addEventListener("drop", dropHandler);
 
                 listItem.category = category;
 
@@ -196,11 +201,124 @@
             this.selector.style.visibility = "visible";
         }
     }
+    function dragStartHandler(event) {
+        startElement = event.target.closest("tr");
+    }
+
+    function dragOverHandler(event) {
+        event.preventDefault();
+        destination = event.target.closest("tr");
+        destination.className = "selected";
+    }
+
+    function dragLeaveHandler(event) {
+         destination = event.target.closest("tr");
+        destination.className = "not-selected";
+    }
+    function dropHandler(event) {
+        destination = event.target.closest("tr");
+        var categoryId = startElement.getAttribute("categoryId");
+        var oldCategoryName = startElement.getAttribute("categoryName");
+        var oldFatherId = startElement.getAttribute("fatherId");
+        var newFatherId = destination.getAttribute("categoryId");
+        var isAllowed = true;
+        if (newFatherId == oldFatherId ||
+            (newFatherId.substring(o, oldFatherId.length) == oldFatherId) ||
+            newFatherId == categoryId) {
+            isAllowed = false;
+        }
+        if (isAllowed) {
+            confirmCopy.update();
+        } else {
+            destination.className = "not-selected";
+            //alert("Spostamento non consentito");
+        }
+
+    }
+    function ConfirmCopy(_confirmCopy, _cancel, _confirm, _savebtn) {
+        this.copy = _confirmCopy;
+        this.cancel = _cancel;
+        this.confirm = _confirm;
+        this.savebtn = _savebtn;
+
+        this.copy.querySelector("span").addEventListener('click', () => { this.close(); });
+        this.cancel.addEventListener('click', () => { this.close(); });
+        this.confirm.addEventListener('click', () => { this.confirm(); });
+
+        this.show = function () {
+            this.copy.style.display = "block";
+            destination.className = "not-selected";
+        }
+
+        this.close = function () {
+            this.copy.style.display = "none";
+            destination.className = "not-selected";
+        }
+
+        this.confirm = function () {
+            if (startElement && destination) {
+                var categoryID = startElement.getAttribute("categoryId");
+                var oldFatId = startElement.getAttribute("fatherId");
+                var newFatId = destination.getAttribute("categoryId");
+                var isAllowed = true;
+                if (newFatId == oldFatId ||
+                    (newFatherId.substring(o, oldFatherId.length) == oldFatherId) ||
+                    newFatId == categoryID) {
+                    isAllowed = false;
+                }
+                if (isAllowed) {
+                    updateQueue.push({
+                        categoryId: categoryID,
+                        oldFatherId: oldFatId,
+                        newFatherId: newFatId,
+                    });
+                    //TODO funzione che copia e updatea
+                    categoriesList.update(categories);
+                }
+                this.savebtn.style.display = "inline-block";
+                creationForm.disable();
+            } else {
+                this.close();
+            }
+            this.close();
+        }
+
+        this.reset = function () {
+            this.copy.style.display = "none";
+        }
+    }
+
+    function SaveCopy(_saveCopy) {
+        this.copy = _saveCopy;
+
+        this.copy.querySelector("span").addEventListener('click', () => { this.close(); });
+        this.copy.querySelector("button").addEventListener('click', () => { this.close(); });
+
+        this.show = function () {
+            this.copy.style.display = "block";
+        }
+
+        this.close = function () {
+            this.copy.style.display = "none";
+        }
+
+        this.reset = function () {
+            this.copy.style.display = "none";
+        }
+    }
 
 
     function PageOrchestrator() {
 
         this.start = function () {
+            confirmCopy=new ConfirmCopy(
+                document.getElementById("id_confirm"),
+                document.getElementById("id_cancelbtn"),
+                document.getElementById("id_confirmbtn"),
+                //document.getElementById("id_savebtn")
+                );
+
+            saveCopy=new SaveCopy(document.getElementById("id_save"));
 
             personalMessage = new PersonalMessage(
                 sessionStorage.getItem("name"),
@@ -221,6 +339,7 @@
             creationForm.registerEvents(this);
 
 
+
         }
 
         this.refresh = function () {
@@ -228,6 +347,10 @@
             creationForm.reset();
             categoriesList.show();
             creationForm.show();
+            confirmCopy.reset();
+            saveCopy.reset();
+            destination=undefined;
+            startElement = undefined;
             updateQueue=[];
         }
     }
