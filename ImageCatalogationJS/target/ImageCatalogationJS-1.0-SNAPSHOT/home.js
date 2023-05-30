@@ -67,9 +67,8 @@
         }
     }
 
-    function CategoryForm(formId, _selector, _alert) {
+    function CreationWizard(formId, _selector) {
         this.form = formId;
-        this.alert = _alert;
         this.selector = _selector;
 
         this.reset = function () {
@@ -78,7 +77,7 @@
             this.enable();
         }
 
-       this.disable = function () {
+        this.disable = function () {
             this.form.querySelector("input[type='button'].submit").setAttribute("disabled", "true");
             this.form.querySelector("input[type='text']").setAttribute("disabled", "true");
             this.form.querySelector("select").setAttribute("disabled", "true");
@@ -100,19 +99,17 @@
                                 if (req.readyState == XMLHttpRequest.DONE) {
                                     var message = req.responseText;
                                     if (req.status == 200) {
-                                        self.alert.textContent = "";
                                         orchestrator.refresh();
                                     } else if (req.status == 403) {
                                         window.location.href = req.getResponseHeader("Location");
                                         window.sessionStorage.removeItem("username");
                                     } else {
-                                        self.alert.textContent = message;
                                         self.reset();
                                     }
                                 }
                             });
                     } else {
-                        window.alert("Non puoi aggiungere una categoria prima di aver salvato le modifiche");
+                        //window.alert("Non puoi aggiungere una categoria prima di aver salvato le modifiche");
                     }
                 } else {
                     this.form.reportValidity();
@@ -132,7 +129,7 @@
                             window.location.href = req.getResponseHeader("Location");
                             window.sessionStorage.removeItem("username");
                         } else {
-                            self.alert.textContent = message;
+                            //self.alert.textContent = message;
                         }
                     }
                 });
@@ -172,21 +169,23 @@
             //categoriesList.registerEvents(this);
             categoriesList.show();
 
-            categoryForm = new CategoryForm(document.getElementById("id_form"),
-                document.getElementById("id_father"), formAlertContainer);
-            categoryForm.registerEvents(this);
+            /*categoryForm = new CategoryForm(
+                document.getElementById("id_form"),
+                document.getElementById("id_father"),
+                formAlertContainer);
+            categoryForm.registerEvents(this);*/
 
-            //creationWizard = new CreationWizard(
-            //document.getElementById("creationWizard"),
-            //document.getElementById("father"));
-            //creationWizard.registerEvents(this);
+            creationWizard = new CreationWizard(
+                document.getElementById("creationWizard"),
+                document.getElementById("father"));
+            creationWizard.registerEvents(this);
 
         }
 
         this.refresh = function () {
-            //categoriesList.reset();
+            categoriesList.reset();
             //creationWizard.reset();
-           // categoriesList.show();
+            categoriesList.show();
             //creationWizard.show();
         }
     }
