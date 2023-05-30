@@ -1,6 +1,7 @@
 (function () {
 
-    let categoriesList,personalMessage,updateModal, creationWizard, pageOrchestrator = new PageOrchestrator();
+    let categoriesList,personalMessage, updateModal, creationForm, pageOrchestrator = new PageOrchestrator();
+    let oldName, newName;
     let categories = [];
     let updateQueue = [];
 
@@ -12,6 +13,10 @@
             pageOrchestrator.refresh(); // display initial content
         }
     }, false);
+
+    function modifyName(event){
+
+    }
 
     function PersonalMessage(_name, _surname, messagecontainer) {
         this.name = _name;
@@ -57,19 +62,25 @@
         }
 
         this.print = function (tree){
+            this.allCategories.innerHTML = "";
             var list = document.createElement("ul");
 
             tree.forEach(function(category) {
                 var listItem = document.createElement("li");
                 listItem.textContent = category.id + " " + category.name;
+
+                listItem.addEventListener('click', modifyName);
+
                 list.appendChild(listItem);
             });
+
+
             this.allCategories.appendChild(list);
             this.allCategories.style.visibility = "visible";
         }
     }
 
-    function CreationWizard(formId, _selector) {
+    function CreationForm(formId, _selector) {
         this.form = formId;
         this.selector = _selector;
 
@@ -102,7 +113,7 @@
                                 if (req.readyState == XMLHttpRequest.DONE) {
                                     var message = req.responseText;
                                     if (req.status == 200) {
-                                        //orchestrator.refresh();
+                                        orchestrator.refresh();
                                     } else if (req.status == 403) {
                                         window.location.href = req.getResponseHeader("Location");
                                         window.sessionStorage.removeItem("username");
@@ -173,20 +184,19 @@
 
 
 
-            creationWizard = new CreationWizard(
-                document.getElementById("creationWizard"),
+            creationForm = new CreationForm(
+                document.getElementById("creationForm"),
                 document.getElementById("father"));
-            creationWizard.registerEvents(this);
-         //   creationWizard.show();
+            creationForm.registerEvents(this);
 
 
         }
 
         this.refresh = function () {
             categoriesList.reset();
-            creationWizard.reset();
+            creationForm.reset();
             categoriesList.show();
-            creationWizard.show();
+            creationForm.show();
             updateQueue=[];
         }
     }
