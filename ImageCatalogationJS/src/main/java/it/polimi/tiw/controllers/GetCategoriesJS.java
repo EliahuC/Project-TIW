@@ -52,6 +52,10 @@ public class GetCategoriesJS extends HttpServlet{
         response.getWriter().write(json);
     }
 
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        doGet(request, response);
+    }
 
 
     public void destroy() {

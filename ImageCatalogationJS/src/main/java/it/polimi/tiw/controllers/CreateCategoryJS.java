@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import it.polimi.tiw.dao.CategoryDAO;
 import it.polimi.tiw.utils.ConnectionHandler;
+import org.apache.commons.lang.StringEscapeUtils;
 
 
 /**
@@ -44,12 +45,12 @@ public class CreateCategoryJS extends HttpServlet {
      * Creates a new category with the selected father
      * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
      */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String name = null;
         String fatherID=null;
         try {
-            name = request.getParameter("name");
-            fatherID = request.getParameter("father");
+            name = StringEscapeUtils.escapeJava(request.getParameter("name"));
+            fatherID = StringEscapeUtils.escapeJava(request.getParameter("father"));
 
             if (name.isEmpty()||fatherID.isEmpty()) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

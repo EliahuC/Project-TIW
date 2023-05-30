@@ -1,7 +1,8 @@
 (function () {
 
-    let categoriesList, creationWizard, pageOrchestrator = new PageOrchestrator();
+    let categoriesList,personalMessage,updateModal, creationWizard, pageOrchestrator = new PageOrchestrator();
     let categories = [];
+    let updateQueue = [];
 
     window.addEventListener("load", () => {
         if (sessionStorage.getItem("username") == null) {
@@ -62,8 +63,8 @@
                 listItem.textContent = category.id + " " + category.name;
                 list.appendChild(listItem);
             });
-
             this.allCategories.appendChild(list);
+            this.allCategories.style.visibility = "visible";
         }
     }
 
@@ -123,7 +124,8 @@
                     if (req.readyState == 4) {
                         var message = req.responseText;
                         if (req.status == 200) {
-                            var categories = JSON.parse(req.responseText);
+                            var categoryList = JSON.parse(message);
+                            categories = [...categoryList];
                             self.update(categories);
                         } else if (req.status == 403) {
                             window.location.href = req.getResponseHeader("Location");
@@ -146,13 +148,13 @@
             self.selector.appendChild(option);
             arrayCategories.forEach(function (category) {
                 option = document.createElement("option");
-                option.text = category.code + " " + category.name;
-                option.value = category.id;
+                option.text = category.id + " " + category.name;
                 self.selector.appendChild(option);
             });
             this.selector.style.visibility = "visible";
         }
     }
+
 
     function PageOrchestrator() {
 
@@ -179,14 +181,17 @@
                 document.getElementById("creationWizard"),
                 document.getElementById("father"));
             creationWizard.registerEvents(this);
+            creationWizard.show();
+
 
         }
 
         this.refresh = function () {
             categoriesList.reset();
-            //creationWizard.reset();
+            creationWizard.reset();
             categoriesList.show();
-            //creationWizard.show();
+            creationWizard.show();
+            updateQueue=[];
         }
     }
 
