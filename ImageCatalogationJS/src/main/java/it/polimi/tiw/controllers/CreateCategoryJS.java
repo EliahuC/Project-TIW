@@ -46,6 +46,9 @@ public class CreateCategoryJS extends HttpServlet {
      * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      doPost(request,response);
+    }
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String name = null;
         String fatherID=null;
         try {
@@ -65,6 +68,7 @@ public class CreateCategoryJS extends HttpServlet {
             return;
         }
 
+
         CategoryDAO category= new CategoryDAO(connection);
 
 
@@ -80,7 +84,6 @@ public class CreateCategoryJS extends HttpServlet {
         response.setCharacterEncoding("ISO-8859-1");
         response.getWriter().print(category);
     }
-
     @Override
     public void destroy() {
         if (connection != null) {

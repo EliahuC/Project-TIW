@@ -30,6 +30,7 @@
         }
 
         this.show = function (){
+
             var self= this;
             makeCall('GET','/ImageCatalogationJS_war_exploded/GetCategoriesJS',null,
                 function (req){
@@ -95,12 +96,13 @@
                 if (this.form.checkValidity()) {
                     var self = this;
                     if (updateQueue.length == 0) {
-                        makeCall("POST", '/ImageCatalogationJS_war_exploded/CreateCategoryJS', e.target.closest("form"),
+
+                        makeCall("POST", 'CreateCategoryJS', e.target.closest("form"),
                             function (req) {
                                 if (req.readyState == XMLHttpRequest.DONE) {
                                     var message = req.responseText;
                                     if (req.status == 200) {
-                                        orchestrator.refresh();
+                                        //orchestrator.refresh();
                                     } else if (req.status == 403) {
                                         window.location.href = req.getResponseHeader("Location");
                                         window.sessionStorage.removeItem("username");
@@ -143,12 +145,10 @@
             this.selector.innerHTML = ""; // empty the selection list
             var self = this;
             option = document.createElement("option");
-            option.text = "NONE (crea una nuova radice)";
-            option.value = -1;
-            self.selector.appendChild(option);
             arrayCategories.forEach(function (category) {
                 option = document.createElement("option");
                 option.text = category.id + " " + category.name;
+                option.value=category.id;
                 self.selector.appendChild(option);
             });
             this.selector.style.visibility = "visible";
@@ -168,20 +168,16 @@
 
             categoriesList = new CategoriesList(
                 document.getElementById("allCategories"));
-            //categoriesList.registerEvents(this);
-            categoriesList.show();
+           // categoriesList.registerEvents(this);
+           // categoriesList.show();
 
-            /*categoryForm = new CategoryForm(
-                document.getElementById("id_form"),
-                document.getElementById("id_father"),
-                formAlertContainer);
-            categoryForm.registerEvents(this);*/
+
 
             creationWizard = new CreationWizard(
                 document.getElementById("creationWizard"),
                 document.getElementById("father"));
             creationWizard.registerEvents(this);
-            creationWizard.show();
+         //   creationWizard.show();
 
 
         }

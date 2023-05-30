@@ -27,5 +27,6 @@
     <filter-mapping>
         <filter-name>LoginChecker</filter-name>
         <url-pattern>/GoToHomePage</url-pattern>
+        <url-pattern>/CreateCategoryJS</url-pattern>
     </filter-mapping>
 </web-app>
