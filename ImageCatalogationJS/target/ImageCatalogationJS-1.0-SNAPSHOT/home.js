@@ -15,7 +15,36 @@
     }, false);
 
     function modifyName(event){
+        var clickedListItem = event.target;
+        var category = clickedListItem.category;
 
+        var input = document.createElement("input");
+        input.type = "text";
+        input.value = category.name;
+
+        clickedListItem.textContent = ""; // Rimuove il contenuto testuale precedente
+        clickedListItem.appendChild(input);
+
+        input.focus(); // Per mettere automaticamente il cursore nell'input
+
+        input.addEventListener('blur', function() {
+            category.name = input.value;
+
+            /*var formElement = new FormData();
+            formElement.append('name', newName);
+
+            makeCall("POST", 'ModifyNameJS', formElement, function(req){
+                if (req.readyState === XMLHttpRequest.DONE) {
+                    if (req.status === 200) {
+                        clickedListItem.textContent = category.id + " " + newName;
+                    } else if (req.status === 403) {
+                    window.location.href = req.getResponseHeader("Location");
+                    window.sessionStorage.removeItem("username");
+                    }
+                }
+            });*/
+            clickedListItem.textContent = category.id + " " + category.name;
+        });
     }
 
     function PersonalMessage(_name, _surname, messagecontainer) {
@@ -68,6 +97,8 @@
             tree.forEach(function(category) {
                 var listItem = document.createElement("li");
                 listItem.textContent = category.id + " " + category.name;
+
+                listItem.category = category;
 
                 listItem.addEventListener('click', modifyName);
 
