@@ -15,21 +15,7 @@
     }
   }
 
- function doRequest(url, method, callback, form = null) {
-     console.log("makeCall on "+method+ " "+url+" "); //debug
-     let request = new XMLHttpRequest();
-     request.onreadystatechange = () => callback(request);
-     request.open(method, url);
-     if (form == null) {
-         request.send();
-     } else {
-         let fd = new FormData(form);
-         request.send(fd);
-     }
- }
-
-
- function makeCallJson(method, url, body, cback) {
+  function makeCallJson(method, url, body, cback) {
     var req = new XMLHttpRequest(); // visible by closure
     req.onreadystatechange = function() {
       cback(req)

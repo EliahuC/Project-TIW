@@ -1,7 +1,13 @@
+
+
+
+
+
+
 (function () {
 
     let categoriesList,personalMessage,confirmCopy,saveCopy,creationForm, pageOrchestrator = new PageOrchestrator();
-    let oldName, newName,destination,startElement;
+    let oldName, newName,destination,startElement,savebtn;
     let categories = [];
     let updateQueue = [];
 
@@ -14,6 +20,41 @@
         }
     }, false);
 
+
+    function copyAndUpdate(_categoryID,_oldFatherId,_newFatherId) {
+        var categoryID=_categoryID;
+        var newFatherId=_newFatherId;
+        var newId;
+        makeCall("GET",'CopyCategoryJS?father='+newFatherId,null,
+            function (req){
+                    if (req.readyState === 4) {
+                        var message = req.responseText;
+                        if (req.status === 200) {
+                            newId=JSON.parse(message);
+                            var j = categories.findIndex(c => c.id === categoryID);
+                            var i = categories.findIndex(c => c.id === newFatherId);
+                            var newCopied=categories[j];
+                            newCopied.id=newId;
+                            categories.splice(i,0,newCopied);
+                            var catChildren = categories.filter(function (c) { return c.id.substring(0, categoryID.length) === categoryID });
+                            catChildren.forEach(function (child) {
+                                i++;
+                                var newChild=child;
+                                newChild.id = newId + child.id.substring(categoryID.length,child.id.length);
+                                categories.splice(i,0,newChild)
+                            });
+                        } else if (req.status === 403) {
+                            window.location.href = req.getResponseHeader("Location");
+                            window.sessionStorage.removeItem("username");
+                        } else {
+                            //self.alert.textContent = message;
+                        }
+                    }
+            });
+
+
+
+    }
     function modifyName(event){
         var clickedListItem = event.target;
         var category = clickedListItem.category;
@@ -30,20 +71,10 @@
         input.addEventListener('blur', function() {
             category.name = input.value;
 
-            makeCall("POST", 'ModifyNameJS?name=' + category.name + '&categoryId=' + category.id, null,
-                function (req){
-                    if (req.readyState === XMLHttpRequest.DONE) {
-                        if (req.status === 200) {
-                            clickedListItem.textContent = category.id + " " + category.name;
-                        } else if (req.status === 403) {
-                            window.location.href = req.getResponseHeader("Location");
-                            window.sessionStorage.removeItem("username");
-                        }
-                    }
-                });
+            /*var formElement = new FormData();
+            formElement.append('name', newName);
 
-            /*doRequest( 'ModifyNameJS?name=' + category.name + '&categoryId=' + category.id,"POST",
-                function(req){
+            makeCall("POST", 'ModifyNameJS', formElement, function(req){
                 if (req.readyState === XMLHttpRequest.DONE) {
                     if (req.status === 200) {
                         clickedListItem.textContent = category.id + " " + newName;
@@ -53,7 +84,7 @@
                     }
                 }
             });*/
-            //clickedListItem.textContent = category.id + " " + category.name;
+            clickedListItem.textContent = category.id + " " + category.name;
         });
     }
 
@@ -65,12 +96,13 @@
         }
     }
 
-    function CategoriesList(_allCategories){
+    function CategoriesList(_allCategories,_savebtn){
         this.allCategories=_allCategories;
+         savebtn=_savebtn;
 
         this.reset = function () {
             this.allCategories.style.visibility = "hidden";
-            //this.savebtn.style.display = "none";
+           savebtn.style.display = "none";
         }
 
         this.show = function (){
@@ -114,6 +146,8 @@
                 listItem.addEventListener("drop", dropHandler);
 
                 listItem.category = category;
+                listItem.setAttribute('categoryId',category.id);
+
 
                 listItem.addEventListener('click', modifyName);
 
@@ -152,15 +186,15 @@
             this.form.querySelector("input[type='button'].submit").addEventListener('click', (e) => {
                 if (this.form.checkValidity()) {
                     var self = this;
-                    if (updateQueue.length == 0) {
+                    if (updateQueue.length === 0) {
 
                         makeCall("POST", 'CreateCategoryJS', e.target.closest("form"),
                             function (req) {
-                                if (req.readyState == XMLHttpRequest.DONE) {
+                                if (req.readyState === XMLHttpRequest.DONE) {
                                     var message = req.responseText;
-                                    if (req.status == 200) {
+                                    if (req.status === 200) {
                                         orchestrator.refresh();
-                                    } else if (req.status == 403) {
+                                    } else if (req.status === 403) {
                                         window.location.href = req.getResponseHeader("Location");
                                         window.sessionStorage.removeItem("username");
                                     } else {
@@ -180,13 +214,13 @@
             var self = this;
             makeCall("GET", '/ImageCatalogationJS_war_exploded/GetCategoriesJS', null,
                 function (req) {
-                    if (req.readyState == 4) {
+                    if (req.readyState === 4) {
                         var message = req.responseText;
-                        if (req.status == 200) {
+                        if (req.status === 200) {
                             var categoryList = JSON.parse(message);
                             categories = [...categoryList];
                             self.update(categories);
-                        } else if (req.status == 403) {
+                        } else if (req.status === 403) {
                             window.location.href = req.getResponseHeader("Location");
                             window.sessionStorage.removeItem("username");
                         } else {
@@ -212,33 +246,33 @@
         }
     }
     function dragStartHandler(event) {
-        startElement = event.target.closest("tr");
+        startElement = event.target.closest("li");
     }
 
     function dragOverHandler(event) {
         event.preventDefault();
-        destination = event.target.closest("tr");
+        var destination = event.target.closest("li");
         destination.className = "selected";
     }
 
     function dragLeaveHandler(event) {
-        destination = event.target.closest("tr");
+        var destination = event.target.closest("li");
         destination.className = "not-selected";
     }
     function dropHandler(event) {
-        destination = event.target.closest("tr");
+        destination = event.target.closest("li");
         var categoryId = startElement.getAttribute("categoryId");
-        var oldCategoryName = startElement.getAttribute("categoryName");
-        var oldFatherId = startElement.getAttribute("fatherId");
+        var oldFatherId = startElement.getAttribute("categoryId");
         var newFatherId = destination.getAttribute("categoryId");
+        oldFatherId=oldFatherId.substring(0,oldFatherId.length-1);
         var isAllowed = true;
-        if (newFatherId == oldFatherId ||
-            (newFatherId.substring(o, oldFatherId.length) == oldFatherId) ||
-            newFatherId == categoryId) {
+        if (newFatherId === oldFatherId ||
+            (newFatherId.substring(0, categoryId.length) === categoryId) ||
+            newFatherId === categoryId) {
             isAllowed = false;
         }
         if (isAllowed) {
-            confirmCopy.update();
+            confirmCopy.confirm();
         } else {
             destination.className = "not-selected";
             //alert("Spostamento non consentito");
@@ -268,22 +302,23 @@
         this.confirm = function () {
             if (startElement && destination) {
                 var categoryID = startElement.getAttribute("categoryId");
-                var oldFatId = startElement.getAttribute("fatherId");
-                var newFatId = destination.getAttribute("categoryId");
+                var oldFatherId = startElement.getAttribute("categoryId");
+                var newFatherId = destination.getAttribute("categoryId");
+                oldFatherId=oldFatherId.substring(0,oldFatherId.length-1);
                 var isAllowed = true;
-                if (newFatId == oldFatId ||
-                    (newFatherId.substring(o, oldFatherId.length) == oldFatherId) ||
-                    newFatId == categoryID) {
+                if (newFatherId === oldFatherId ||
+                    (newFatherId.substring(0, categoryID.length) === categoryID) ||
+                    newFatherId === categoryID) {
                     isAllowed = false;
                 }
                 if (isAllowed) {
                     updateQueue.push({
                         categoryId: categoryID,
-                        oldFatherId: oldFatId,
-                        newFatherId: newFatId,
+                        oldFatherId: oldFatherId,
+                        newFatherId: newFatherId,
                     });
-                    //TODO funzione che copia e updatea
-                    categoriesList.update(categories);
+                    copyAndUpdate(categoryID,oldFatherId,newFatherId)
+                    categoriesList.print(categories);
                 }
                 this.savebtn.style.display = "inline-block";
                 creationForm.disable();
@@ -325,8 +360,8 @@
                 document.getElementById("id_confirm"),
                 document.getElementById("id_cancelbtn"),
                 document.getElementById("id_confirmbtn"),
-                //document.getElementById("id_savebtn")
-            );
+                document.getElementById("id_savebtn")
+                );
 
             saveCopy=new SaveCopy(document.getElementById("id_save"));
 
@@ -337,9 +372,10 @@
             personalMessage.show();
 
             categoriesList = new CategoriesList(
-                document.getElementById("allCategories"));
-            // categoriesList.registerEvents(this);
-            // categoriesList.show();
+                document.getElementById("allCategories"),
+                document.getElementById("id_savebtn"));
+           // categoriesList.registerEvents(this);
+           // categoriesList.show();
 
 
 

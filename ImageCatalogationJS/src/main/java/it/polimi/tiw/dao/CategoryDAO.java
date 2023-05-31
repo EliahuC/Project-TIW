@@ -243,7 +243,6 @@ public class CategoryDAO {
             getAllCopied(c,allCopiedCategories);
         }
     }
-
     public void updateName(String categoryId, String newName) throws SQLException{
         String query = "UPDATE category SET name = ? WHERE id = ?";
         try (PreparedStatement statement = con.prepareStatement(query)) {
