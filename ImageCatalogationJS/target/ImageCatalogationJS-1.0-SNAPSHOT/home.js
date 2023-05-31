@@ -27,29 +27,32 @@
         var newId;
         makeCall("GET",'CopyCategoryJS?father='+newFatherId,null,
             function (req){
-                    if (req.readyState === 4) {
-                        var message = req.responseText;
-                        if (req.status === 200) {
-                            newId=JSON.parse(message);
-                            var j = categories.findIndex(c => c.id === categoryID);
-                            var i = categories.findIndex(c => c.id === newFatherId);
-                            var newCopied=categories[j];
-                            newCopied.id=newId;
-                            categories.splice(i,0,newCopied);
-                            var catChildren = categories.filter(function (c) { return c.id.substring(0, categoryID.length) === categoryID });
-                            catChildren.forEach(function (child) {
-                                i++;
-                                var newChild=child;
-                                newChild.id = newId + child.id.substring(categoryID.length,child.id.length);
-                                categories.splice(i,0,newChild)
-                            });
-                        } else if (req.status === 403) {
-                            window.location.href = req.getResponseHeader("Location");
-                            window.sessionStorage.removeItem("username");
-                        } else {
-                            //self.alert.textContent = message;
-                        }
+                if (req.readyState === 4) {
+                    var message = req.responseText;
+                    if (req.status === 200) {
+                        newId=JSON.parse(message);
+                        var j = categories.findIndex(c => c.id === categoryID);
+                        var i = categories.findIndex(c => c.id === newFatherId);
+                        var newCopied = { ...categories[j] };
+                        newCopied.id = newId;
+                        //categories.splice(i+1,0, newCopied);
+                        var catChildren = categories.filter(function (c) { return c.id.substring(0, categoryID.length) === categoryID });
+                        catChildren.forEach(function (child) {
+                            i++;
+                            var newChild = { ...child };
+                            newChild.id = newId + child.id.substring(categoryID.length, child.id.length);
+                            categories.splice(i,0,newChild);
+                        });
+                        categoriesList.print(categories.sort(function (c1,c2){
+                            return (c1.id).localeCompare(c2.id);
+                        }));
+                    } else if (req.status === 403) {
+                        window.location.href = req.getResponseHeader("Location");
+                        window.sessionStorage.removeItem("username");
+                    } else {
+                        //self.alert.textContent = message;
                     }
+                }
             });
 
 
@@ -71,20 +74,17 @@
         input.addEventListener('blur', function() {
             category.name = input.value;
 
-            /*var formElement = new FormData();
-            formElement.append('name', newName);
-
-            makeCall("POST", 'ModifyNameJS', formElement, function(req){
-                if (req.readyState === XMLHttpRequest.DONE) {
-                    if (req.status === 200) {
-                        clickedListItem.textContent = category.id + " " + newName;
-                    } else if (req.status === 403) {
-                    window.location.href = req.getResponseHeader("Location");
-                    window.sessionStorage.removeItem("username");
+            makeCall("POST", 'ModifyNameJS?name=' + category.name + '&categoryId=' + category.id, null,
+                function (req){
+                    if (req.readyState === XMLHttpRequest.DONE) {
+                        if (req.status === 200) {
+                            clickedListItem.textContent = category.id + " " + category.name;
+                        } else if (req.status === 403) {
+                            window.location.href = req.getResponseHeader("Location");
+                            window.sessionStorage.removeItem("username");
+                        }
                     }
-                }
-            });*/
-            clickedListItem.textContent = category.id + " " + category.name;
+                });
         });
     }
 
@@ -98,11 +98,11 @@
 
     function CategoriesList(_allCategories,_savebtn){
         this.allCategories=_allCategories;
-         savebtn=_savebtn;
+        savebtn=_savebtn;
 
         this.reset = function () {
             this.allCategories.style.visibility = "hidden";
-           savebtn.style.display = "none";
+            savebtn.style.display = "none";
         }
 
         this.show = function (){
@@ -272,7 +272,7 @@
             isAllowed = false;
         }
         if (isAllowed) {
-            confirmCopy.confirm();
+            confirmCopy.show();
         } else {
             destination.className = "not-selected";
             //alert("Spostamento non consentito");
@@ -317,8 +317,7 @@
                         oldFatherId: oldFatherId,
                         newFatherId: newFatherId,
                     });
-                    copyAndUpdate(categoryID,oldFatherId,newFatherId)
-                    categoriesList.print(categories);
+                    copyAndUpdate(categoryID,oldFatherId,newFatherId);
                 }
                 this.savebtn.style.display = "inline-block";
                 creationForm.disable();
@@ -361,7 +360,7 @@
                 document.getElementById("id_cancelbtn"),
                 document.getElementById("id_confirmbtn"),
                 document.getElementById("id_savebtn")
-                );
+            );
 
             saveCopy=new SaveCopy(document.getElementById("id_save"));
 
@@ -374,8 +373,8 @@
             categoriesList = new CategoriesList(
                 document.getElementById("allCategories"),
                 document.getElementById("id_savebtn"));
-           // categoriesList.registerEvents(this);
-           // categoriesList.show();
+            // categoriesList.registerEvents(this);
+            // categoriesList.show();
 
 
 
