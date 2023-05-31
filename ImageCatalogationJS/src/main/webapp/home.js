@@ -7,7 +7,7 @@
 (function () {
 
     let categoriesList,personalMessage,confirmCopy,saveCopy,creationForm, pageOrchestrator = new PageOrchestrator();
-    let oldName, newName,destination,startElement,savebtn;
+    let destination,startElement,savebtn;
     let categories = [];
     let updateQueue = [];
 
@@ -33,6 +33,14 @@
                         newId=JSON.parse(message);
                         var j = categories.findIndex(c => c.id === categoryID);
                         var i = categories.findIndex(c => c.id === newFatherId);
+                        var x=categories.findIndex(c=> c.id===newId);
+                        while(x!==-1){
+                            if(newId.substring(newId.length-1)==="9"){
+                                return;
+                            }
+                           newId=newId.substring(0,newId.length-1)+ (parseFloat(newId.substring(newId.length-1))+1) ;
+                           x=categories.findIndex(c=> c.id===newId);
+                        }
                         var newCopied = { ...categories[j] };
                         newCopied.id = newId;
                         var catChildren = categories.filter(function (c) { return c.id.substring(0, categoryID.length) === categoryID });
@@ -45,6 +53,11 @@
                         categoriesList.print(categories.sort(function (c1,c2){
                             return (c1.id).localeCompare(c2.id);
                         }));
+                        updateQueue.push({
+                            categoryId: categoryID,
+                            NewId:newId,
+                            newFatherId: newFatherId,
+                        });
                     } else if (req.status === 403) {
                         window.location.href = req.getResponseHeader("Location");
                         window.sessionStorage.removeItem("username");
@@ -95,20 +108,20 @@
         }
     }
 
-    function CategoriesList(_allCategories,_savebtn){
-        this.allCategories=_allCategories;
-        savebtn=_savebtn;
+    function CategoriesList(_allCategories,_savebtn) {
+        this.allCategories = _allCategories;
+        savebtn = _savebtn;
 
         this.reset = function () {
             this.allCategories.style.visibility = "hidden";
             savebtn.style.display = "none";
         }
 
-        this.show = function (){
+        this.show = function () {
 
-            var self= this;
-            makeCall('GET','/ImageCatalogationJS_war_exploded/GetCategoriesJS',null,
-                function (req){
+            var self = this;
+            makeCall('GET', '/ImageCatalogationJS_war_exploded/GetCategoriesJS', null,
+                function (req) {
 
                     if (req.readyState === 4) {
                         var message = req.responseText;
@@ -131,21 +144,21 @@
                 });
         }
 
-        this.print = function (tree){
+        this.print = function (tree) {
             this.allCategories.innerHTML = "";
             var list = document.createElement("ul");
 
-            tree.forEach(function(category) {
+            tree.forEach(function (category) {
                 var listItem = document.createElement("li");
                 listItem.textContent = category.id + " " + category.name;
-                listItem.setAttribute("draggable","true");
+                listItem.setAttribute("draggable", "true");
                 listItem.addEventListener("dragstart", dragStartHandler);
                 listItem.addEventListener("dragover", dragOverHandler);
                 listItem.addEventListener("dragleave", dragLeaveHandler);
                 listItem.addEventListener("drop", dropHandler);
 
                 listItem.category = category;
-                listItem.setAttribute('categoryId',category.id);
+                listItem.setAttribute('categoryId', category.id);
 
 
                 listItem.addEventListener('click', modifyName);
@@ -156,6 +169,30 @@
 
             this.allCategories.appendChild(list);
             this.allCategories.style.visibility = "visible";
+        }
+
+        this.registerEvents = function (orchestrator) {
+              savebtn.addEventListener('click', (e) => {
+                if (updateQueue.length !== 0) {
+                    var self = this;
+                    makeCallJson("POST", 'SaveCategoriesJS', updateQueue,
+                        function (req) {
+                            if (req.readyState === XMLHttpRequest.DONE) {
+                                var message = req.responseText;
+                                if (req.status === 200) {
+                                    orchestrator.refresh();
+                                    saveCopy.show();
+                                } else if (req.status === 403) {
+                                    window.location.href = req.getResponseHeader("Location");
+                                    window.sessionStorage.removeItem("username");
+                                } else {
+                                    //self.alert.textContent = message;
+                                    self.reset();
+                                }
+                            }
+                        });
+                }
+            })
         }
     }
 
@@ -190,7 +227,6 @@
                         makeCall("POST", 'CreateCategoryJS', e.target.closest("form"),
                             function (req) {
                                 if (req.readyState === XMLHttpRequest.DONE) {
-                                    var message = req.responseText;
                                     if (req.status === 200) {
                                         orchestrator.refresh();
                                     } else if (req.status === 403) {
@@ -311,11 +347,7 @@
                     isAllowed = false;
                 }
                 if (isAllowed) {
-                    updateQueue.push({
-                        categoryId: categoryID,
-                        oldFatherId: oldFatherId,
-                        newFatherId: newFatherId,
-                    });
+
                     copyAndUpdate(categoryID,oldFatherId,newFatherId);
                 }
                 this.savebtn.style.display = "inline-block";
@@ -372,7 +404,7 @@
             categoriesList = new CategoriesList(
                 document.getElementById("allCategories"),
                 document.getElementById("id_savebtn"));
-            // categoriesList.registerEvents(this);
+            categoriesList.registerEvents(this);
             // categoriesList.show();
 
 
