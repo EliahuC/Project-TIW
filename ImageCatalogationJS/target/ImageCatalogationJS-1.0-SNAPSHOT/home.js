@@ -1,7 +1,7 @@
 (function () {
 
     let categoriesList,personalMessage,confirmCopy,saveCopy,creationForm, pageOrchestrator = new PageOrchestrator();
-    let oldName, newName,destination;
+    let oldName, newName,destination,startElement;
     let categories = [];
     let updateQueue = [];
 
@@ -30,10 +30,20 @@
         input.addEventListener('blur', function() {
             category.name = input.value;
 
-            /*var formElement = new FormData();
-            formElement.append('name', newName);
+            makeCall("POST", 'ModifyNameJS?name=' + category.name + '&categoryId=' + category.id, null,
+                function (req){
+                    if (req.readyState === XMLHttpRequest.DONE) {
+                        if (req.status === 200) {
+                            clickedListItem.textContent = category.id + " " + category.name;
+                        } else if (req.status === 403) {
+                            window.location.href = req.getResponseHeader("Location");
+                            window.sessionStorage.removeItem("username");
+                        }
+                    }
+                });
 
-            makeCall("POST", 'ModifyNameJS', formElement, function(req){
+            /*doRequest( 'ModifyNameJS?name=' + category.name + '&categoryId=' + category.id,"POST",
+                function(req){
                 if (req.readyState === XMLHttpRequest.DONE) {
                     if (req.status === 200) {
                         clickedListItem.textContent = category.id + " " + newName;
@@ -43,7 +53,7 @@
                     }
                 }
             });*/
-            clickedListItem.textContent = category.id + " " + category.name;
+            //clickedListItem.textContent = category.id + " " + category.name;
         });
     }
 
@@ -212,8 +222,8 @@
     }
 
     function dragLeaveHandler(event) {
-        var dest = event.target.closest("tr");
-        dest.className = "not-selected";
+        destination = event.target.closest("tr");
+        destination.className = "not-selected";
     }
     function dropHandler(event) {
         destination = event.target.closest("tr");
@@ -316,7 +326,7 @@
                 document.getElementById("id_cancelbtn"),
                 document.getElementById("id_confirmbtn"),
                 //document.getElementById("id_savebtn")
-                );
+            );
 
             saveCopy=new SaveCopy(document.getElementById("id_save"));
 
@@ -328,8 +338,8 @@
 
             categoriesList = new CategoriesList(
                 document.getElementById("allCategories"));
-           // categoriesList.registerEvents(this);
-           // categoriesList.show();
+            // categoriesList.registerEvents(this);
+            // categoriesList.show();
 
 
 
@@ -350,6 +360,7 @@
             confirmCopy.reset();
             saveCopy.reset();
             destination=undefined;
+            startElement = undefined;
             updateQueue=[];
         }
     }

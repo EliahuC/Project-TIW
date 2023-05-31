@@ -243,5 +243,14 @@ public class CategoryDAO {
             getAllCopied(c,allCopiedCategories);
         }
     }
+
+    public void updateName(String categoryId, String newName) throws SQLException{
+        String query = "UPDATE category SET name = ? WHERE id = ?";
+        try (PreparedStatement statement = con.prepareStatement(query)) {
+            statement.setString(1, newName);
+            statement.setString(2, categoryId);
+            statement.executeUpdate();
+        }
+    }
 }
 

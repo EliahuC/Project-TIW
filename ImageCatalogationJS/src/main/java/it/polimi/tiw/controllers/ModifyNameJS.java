@@ -22,13 +22,15 @@ public class ModifyNameJS extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String newName = null;
+        String id = null;
 
         try{
             newName = StringEscapeUtils.escapeJava(request.getParameter("name"));
+            id = StringEscapeUtils.escapeJava(request.getParameter("categoryId"));
 
-            if (newName.isEmpty()) {
+            if (newName.isEmpty() || id.isEmpty()) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.getWriter().println("Incorrect or missing request parameters");
                 return;
@@ -43,7 +45,7 @@ public class ModifyNameJS extends HttpServlet {
         CategoryDAO category=new CategoryDAO(connection);
 
         try {
-            System.out.println(newName);
+            category.updateName(id, newName);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().println("Not possible to create category");

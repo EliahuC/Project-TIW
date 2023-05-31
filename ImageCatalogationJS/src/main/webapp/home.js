@@ -30,20 +30,17 @@
         input.addEventListener('blur', function() {
             category.name = input.value;
 
-            /*var formElement = new FormData();
-            formElement.append('name', newName);
-
-            makeCall("POST", 'ModifyNameJS', formElement, function(req){
-                if (req.readyState === XMLHttpRequest.DONE) {
-                    if (req.status === 200) {
-                        clickedListItem.textContent = category.id + " " + newName;
-                    } else if (req.status === 403) {
-                    window.location.href = req.getResponseHeader("Location");
-                    window.sessionStorage.removeItem("username");
+            makeCall("POST", 'ModifyNameJS?name=' + category.name + '&categoryId=' + category.id, null,
+                function (req){
+                    if (req.readyState === XMLHttpRequest.DONE) {
+                        if (req.status === 200) {
+                            clickedListItem.textContent = category.id + " " + category.name;
+                        } else if (req.status === 403) {
+                            window.location.href = req.getResponseHeader("Location");
+                            window.sessionStorage.removeItem("username");
+                        }
                     }
-                }
-            });*/
-            clickedListItem.textContent = category.id + " " + category.name;
+                });
         });
     }
 
@@ -212,7 +209,7 @@
     }
 
     function dragLeaveHandler(event) {
-         destination = event.target.closest("tr");
+        destination = event.target.closest("tr");
         destination.className = "not-selected";
     }
     function dropHandler(event) {
@@ -316,7 +313,7 @@
                 document.getElementById("id_cancelbtn"),
                 document.getElementById("id_confirmbtn"),
                 //document.getElementById("id_savebtn")
-                );
+            );
 
             saveCopy=new SaveCopy(document.getElementById("id_save"));
 
@@ -328,8 +325,8 @@
 
             categoriesList = new CategoriesList(
                 document.getElementById("allCategories"));
-           // categoriesList.registerEvents(this);
-           // categoriesList.show();
+            // categoriesList.registerEvents(this);
+            // categoriesList.show();
 
 
 
