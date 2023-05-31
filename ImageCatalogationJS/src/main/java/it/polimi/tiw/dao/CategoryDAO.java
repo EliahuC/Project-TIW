@@ -77,7 +77,6 @@ public class CategoryDAO {
      */
     public void createCategory(String name, String id) throws SQLException {
         String idchild=getNewID(id);
-        System.out.println(idchild + " " + name);
         if(idchild==null) {
             return;
         }

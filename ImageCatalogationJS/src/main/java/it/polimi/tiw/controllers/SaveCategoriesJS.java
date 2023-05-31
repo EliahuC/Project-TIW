@@ -75,36 +75,37 @@ public class SaveCategoriesJS extends HttpServlet {
 
         CategoryDAO category = new CategoryDAO(connection);
 
-        for (CategoryChanges c : categoryUpdateArray) {
-            try {
-                connection.setAutoCommit(false);
+        try {
+            connection.setAutoCommit(false);
+            for (CategoryChanges c : categoryUpdateArray) {
                 String copiedCategoryNewId = c.getNewId();
                 String name=category.checkCategory(c.getCategoryId()).getName();
                 category.createCategory(name, c.getNewFatherId());
                 category.paste(c.getCategoryId(), copiedCategoryNewId);
-            } catch (Exception e) {
-                try {
-                    connection.rollback();
-                } catch (SQLException e1) {
-                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                    response.getWriter().println("Cannot RollBack");
-                    return;
-                }
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                response.getWriter().println("Cannot Save");
-                return;
             }
+        } catch (Exception e) {
             try {
-                connection.commit();
-            } catch (SQLException e) {
+                connection.rollback();
+            } catch (SQLException e1) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                response.getWriter().println("Cannot Commit on the database");
+                response.getWriter().println("Cannot RollBack");
                 return;
             }
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType("application/json");
-            response.setCharacterEncoding("ISO-8859-1");
-            response.getWriter().print(category);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().println("Cannot Save");
+            return;
         }
+
+        try {
+            connection.commit();
+        } catch (SQLException e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().println("Cannot Commit on the database");
+            return;
+        }
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("ISO-8859-1");
+        response.getWriter().print(category);
     }
 }

@@ -38,8 +38,8 @@
                             if(newId.substring(newId.length-1)==="9"){
                                 return;
                             }
-                           newId=newId.substring(0,newId.length-1)+ (parseFloat(newId.substring(newId.length-1))+1) ;
-                           x=categories.findIndex(c=> c.id===newId);
+                            newId=newId.substring(0,newId.length-1)+ (parseFloat(newId.substring(newId.length-1))+1) ;
+                            x=categories.findIndex(c=> c.id===newId);
                         }
                         var newCopied = { ...categories[j] };
                         newCopied.id = newId;
@@ -55,7 +55,7 @@
                         }));
                         updateQueue.push({
                             categoryId: categoryID,
-                            NewId:newId,
+                            newId: newId,
                             newFatherId: newFatherId,
                         });
                     } else if (req.status === 403) {
@@ -172,7 +172,7 @@
         }
 
         this.registerEvents = function (orchestrator) {
-              savebtn.addEventListener('click', (e) => {
+            savebtn.addEventListener('click', (e) => {
                 if (updateQueue.length !== 0) {
                     var self = this;
                     makeCallJson("POST", 'SaveCategoriesJS', updateQueue,
