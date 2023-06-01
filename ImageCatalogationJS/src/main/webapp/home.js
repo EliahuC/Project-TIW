@@ -22,18 +22,18 @@
 
 
     function copyAndUpdate(_categoryID,_oldFatherId,_newFatherId) {
-        var categoryID=_categoryID;
-        var newFatherId=_newFatherId;
-        var newId;
+        let categoryID = _categoryID;
+        let newFatherId = _newFatherId;
+        let newId;
         makeCall("GET",'CopyCategoryJS?father='+newFatherId,null,
             function (req){
                 if (req.readyState === 4) {
-                    var message = req.responseText;
+                    let message = req.responseText;
                     if (req.status === 200) {
                         newId=JSON.parse(message);
-                        var j = categories.findIndex(c => c.id === categoryID);
-                        var i = categories.findIndex(c => c.id === newFatherId);
-                        var x=categories.findIndex(c=> c.id===newId);
+                        let j = categories.findIndex(c => c.id === categoryID);
+                        let i = categories.findIndex(c => c.id === newFatherId);
+                        let x = categories.findIndex(c => c.id === newId);
                         while(x!==-1){
                             if(newId.substring(newId.length-1)==="9"){
                                 self.alert("The number of sub-categories cannot be more than 9");
@@ -42,12 +42,14 @@
                             newId=newId.substring(0,newId.length-1)+ (parseFloat(newId.substring(newId.length-1))+1) ;
                             x=categories.findIndex(c=> c.id===newId);
                         }
-                        var newCopied = { ...categories[j] };
+                        const newCopied = {...categories[j]};
                         newCopied.id = newId;
-                        var catChildren = categories.filter(function (c) { return c.id.substring(0, categoryID.length) === categoryID });
+                        const catChildren = categories.filter(function (c) {
+                            return c.id.substring(0, categoryID.length) === categoryID
+                        });
                         catChildren.forEach(function (child) {
                             i++;
-                            var newChild = { ...child };
+                            const newChild = {...child};
                             newChild.id = newId + child.id.substring(categoryID.length, child.id.length);
                             categories.splice(i,0,newChild);
                         });
@@ -72,10 +74,10 @@
 
     }
     function modifyName(event){
-        var clickedListItem = event.target;
-        var category = clickedListItem.category;
+        const clickedListItem = event.target;
+        const category = clickedListItem.category;
 
-        var input = document.createElement("input");
+        const input = document.createElement("input");
         input.type = "text";
         input.value = category.name;
 
@@ -121,14 +123,14 @@
 
         this.show = function () {
 
-            var self = this;
+            const self = this;
             makeCall('GET', '/ImageCatalogationJS_war_exploded/GetCategoriesJS', null,
                 function (req) {
 
                     if (req.readyState === 4) {
-                        var message = req.responseText;
+                        const message = req.responseText;
                         if (req.status === 200) {
-                            var categoryList = JSON.parse(message);
+                            const categoryList = JSON.parse(message);
                             categories = [...categoryList];
                             if (categories.length === 0) {
                                 self.alert.textContent = "Nessuna categoria";
@@ -148,10 +150,10 @@
 
         this.print = function (tree) {
             this.allCategories.innerHTML = "";
-            var list = document.createElement("ul");
+            const list = document.createElement("ul");
 
             tree.forEach(function (category) {
-                var listItem = document.createElement("li");
+                const listItem = document.createElement("li");
                 listItem.textContent = category.id + " " + category.name;
                 listItem.setAttribute("draggable", "true");
                 listItem.addEventListener("dragstart", dragStartHandler);
@@ -174,13 +176,13 @@
         }
 
         this.registerEvents = function (orchestrator) {
-            savebtn.addEventListener('click', (e) => {
+            savebtn.addEventListener('click', () => {
                 if (updateQueue.length !== 0) {
-                    var self = this;
+                    const self = this;
                     makeCallJson("POST", 'SaveCategoriesJS', updateQueue,
                         function (req) {
                             if (req.readyState === XMLHttpRequest.DONE) {
-                                var message = req.responseText;
+                                const message = req.responseText;
                                 if (req.status === 200) {
                                     orchestrator.refresh();
                                     saveCopy.show();
@@ -224,13 +226,13 @@
         this.registerEvents = function (orchestrator) {
             this.form.querySelector("input[type='button'].submit").addEventListener('click', (e) => {
                 if (this.form.checkValidity()) {
-                    var self = this;
+                    const self = this;
                     if (updateQueue.length === 0) {
 
                         makeCall("POST", 'CreateCategoryJS', e.target.closest("form"),
                             function (req) {
                                 if (req.readyState === XMLHttpRequest.DONE) {
-                                    var message = req.responseText;
+                                    const message = req.responseText;
                                     if (req.status === 200) {
                                         self.alert.textContent = "";
                                         orchestrator.refresh();
@@ -253,13 +255,13 @@
         }
 
         this.show = function () {
-            var self = this;
+            const self = this;
             makeCall("GET", '/ImageCatalogationJS_war_exploded/GetCategoriesJS', null,
                 function (req) {
                     if (req.readyState === 4) {
-                        var message = req.responseText;
+                        const message = req.responseText;
                         if (req.status === 200) {
-                            var categoryList = JSON.parse(message);
+                            const categoryList = JSON.parse(message);
                             categories = [...categoryList];
                             self.update(categories);
                         } else if (req.status === 403) {
@@ -274,9 +276,9 @@
         }
 
         this.update = function (arrayCategories) {
-            var option;
+            let option;
             this.selector.innerHTML = ""; // empty the selection list
-            var self = this;
+            const self = this;
             option = document.createElement("option");
             arrayCategories.forEach(function (category) {
                 option = document.createElement("option");
@@ -293,22 +295,22 @@
 
     function dragOverHandler(event) {
         event.preventDefault();
-        var destination = event.target.closest("li");
+        const destination = event.target.closest("li");
         destination.className = "selected";
     }
 
     function dragLeaveHandler(event) {
-        var destination = event.target.closest("li");
+        const destination = event.target.closest("li");
         destination.className = "not-selected";
     }
 
     function dropHandler(event) {
         destination = event.target.closest("li");
-        var categoryId = startElement.getAttribute("categoryId");
-        var oldFatherId = startElement.getAttribute("categoryId");
-        var newFatherId = destination.getAttribute("categoryId");
+        const categoryId = startElement.getAttribute("categoryId");
+        let oldFatherId = startElement.getAttribute("categoryId");
+        const newFatherId = destination.getAttribute("categoryId");
         oldFatherId=oldFatherId.substring(0,oldFatherId.length-1);
-        var isAllowed = true;
+        let isAllowed = true;
         if (newFatherId === oldFatherId ||
             (newFatherId.substring(0, categoryId.length) === categoryId) ||
             newFatherId === categoryId) {
@@ -344,11 +346,11 @@
 
         this.confirm = function () {
             if (startElement && destination) {
-                var categoryID = startElement.getAttribute("categoryId");
-                var oldFatherId = startElement.getAttribute("categoryId");
-                var newFatherId = destination.getAttribute("categoryId");
+                const categoryID = startElement.getAttribute("categoryId");
+                let oldFatherId = startElement.getAttribute("categoryId");
+                const newFatherId = destination.getAttribute("categoryId");
                 oldFatherId=oldFatherId.substring(0,oldFatherId.length-1);
-                var isAllowed = true;
+                let isAllowed = true;
                 if (newFatherId === oldFatherId ||
                     (newFatherId.substring(0, categoryID.length) === categoryID) ||
                     newFatherId === categoryID) {
@@ -392,7 +394,7 @@
 
 
     function PageOrchestrator() {
-        var alertContainer = document.getElementById("alert");
+        const alertContainer = document.getElementById("alert");
 
         this.start = function () {
             confirmCopy=new ConfirmCopy(

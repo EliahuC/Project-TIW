@@ -2,7 +2,7 @@ package it.polimi.tiw.controllers;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
+
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -14,11 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 import it.polimi.tiw.beans.Category;
-import it.polimi.tiw.beans.User;
+
 import it.polimi.tiw.dao.CategoryDAO;
-import it.polimi.tiw.dao.UserDAO;
+
 import it.polimi.tiw.utils.ConnectionHandler;
-import org.apache.commons.lang.StringEscapeUtils;
+
 
 /**
  * Servlet implementation class CheckLoginJS

@@ -59,7 +59,7 @@ public class LoginChecker implements Filter {
     /**
      * @see Filter#init(FilterConfig)
      */
-    public void init(FilterConfig fConfig) throws ServletException {
+    public void init(FilterConfig fConfig) {
         // TODO Auto-generated method stub
     }
 

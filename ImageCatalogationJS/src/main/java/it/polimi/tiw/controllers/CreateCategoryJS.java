@@ -45,12 +45,12 @@ public class CreateCategoryJS extends HttpServlet {
      * Creates a new category with the selected father
      * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
      */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws  IOException {
       doPost(request,response);
     }
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String name = null;
-        String fatherID=null;
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws  IOException {
+        String name ;
+        String fatherID;
         try {
             name = StringEscapeUtils.escapeJava(request.getParameter("name"));
             fatherID = StringEscapeUtils.escapeJava(request.getParameter("father"));
@@ -89,7 +89,7 @@ public class CreateCategoryJS extends HttpServlet {
         if (connection != null) {
             try {
                 connection.close();
-            } catch (SQLException e){
+            } catch (SQLException ignored){
 
             }
         }
