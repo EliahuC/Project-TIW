@@ -36,6 +36,7 @@
                         var x=categories.findIndex(c=> c.id===newId);
                         while(x!==-1){
                             if(newId.substring(newId.length-1)==="9"){
+                                self.alert("The number of sub-categories cannot be more than 9");
                                 return;
                             }
                             newId=newId.substring(0,newId.length-1)+ (parseFloat(newId.substring(newId.length-1))+1) ;
@@ -62,7 +63,7 @@
                         window.location.href = req.getResponseHeader("Location");
                         window.sessionStorage.removeItem("username");
                     } else {
-                        //self.alert.textContent = message;
+                        self.alert.textContent = message;
                     }
                 }
             });
@@ -108,9 +109,10 @@
         }
     }
 
-    function CategoriesList(_allCategories,_savebtn) {
+    function CategoriesList(_allCategories,_savebtn, _alert) {
         this.allCategories = _allCategories;
         savebtn = _savebtn;
+        this.alert = _alert;
 
         this.reset = function () {
             this.allCategories.style.visibility = "hidden";
@@ -128,17 +130,17 @@
                         if (req.status === 200) {
                             var categoryList = JSON.parse(message);
                             categories = [...categoryList];
-                            /*if (categories.length == 0) {
+                            if (categories.length === 0) {
                                 self.alert.textContent = "Nessuna categoria";
                                 return;
                             }
-                            self.alert.textContent = "";*/
+                            self.alert.textContent = "";
                             self.print(categories);
                         } else if (req.status === 403) {
                             window.location.href = req.getResponseHeader("Location");
                             window.sessionStorage.removeItem("username");
                         } else {
-                            //self.alert.textContent = message;
+                            self.alert.textContent = message;
                         }
                     }
                 });
@@ -186,7 +188,7 @@
                                     window.location.href = req.getResponseHeader("Location");
                                     window.sessionStorage.removeItem("username");
                                 } else {
-                                    //self.alert.textContent = message;
+                                    self.alert.textContent = message;
                                     self.reset();
                                 }
                             }
@@ -196,9 +198,10 @@
         }
     }
 
-    function CreationForm(formId, _selector) {
+    function CreationForm(formId, _selector, _alert) {
         this.form = formId;
         this.selector = _selector;
+        this.alert = _alert;
 
         this.reset = function () {
             this.form.reset();
@@ -227,24 +230,28 @@
                         makeCall("POST", 'CreateCategoryJS', e.target.closest("form"),
                             function (req) {
                                 if (req.readyState === XMLHttpRequest.DONE) {
+                                    var message = req.responseText;
                                     if (req.status === 200) {
+                                        self.alert.textContent = "";
                                         orchestrator.refresh();
                                     } else if (req.status === 403) {
                                         window.location.href = req.getResponseHeader("Location");
                                         window.sessionStorage.removeItem("username");
                                     } else {
+                                        self.alert.textContent = message;
                                         self.reset();
                                     }
                                 }
                             });
                     } else {
-                        //window.alert("Non puoi aggiungere una categoria prima di aver salvato le modifiche");
+                        window.alert("Illegal action");
                     }
                 } else {
                     this.form.reportValidity();
                 }
             })
         }
+
         this.show = function () {
             var self = this;
             makeCall("GET", '/ImageCatalogationJS_war_exploded/GetCategoriesJS', null,
@@ -259,7 +266,7 @@
                             window.location.href = req.getResponseHeader("Location");
                             window.sessionStorage.removeItem("username");
                         } else {
-                            //self.alert.textContent = message;
+                            self.alert.textContent = message;
                         }
                     }
                 });
@@ -294,6 +301,7 @@
         var destination = event.target.closest("li");
         destination.className = "not-selected";
     }
+
     function dropHandler(event) {
         destination = event.target.closest("li");
         var categoryId = startElement.getAttribute("categoryId");
@@ -310,10 +318,10 @@
             confirmCopy.show();
         } else {
             destination.className = "not-selected";
-            //alert("Spostamento non consentito");
+            alert("Spostamento non consentito");
         }
-
     }
+
     function ConfirmCopy(_confirmCopy, _cancel, _confirm, _savebtn) {
         this.copy = _confirmCopy;
         this.cancel = _cancel;
@@ -384,6 +392,7 @@
 
 
     function PageOrchestrator() {
+        var alertContainer = document.getElementById("alert");
 
         this.start = function () {
             confirmCopy=new ConfirmCopy(
@@ -403,18 +412,16 @@
 
             categoriesList = new CategoriesList(
                 document.getElementById("allCategories"),
-                document.getElementById("id_savebtn"));
+                document.getElementById("id_savebtn"),
+                alertContainer);
             categoriesList.registerEvents(this);
-            // categoriesList.show();
-
 
 
             creationForm = new CreationForm(
                 document.getElementById("creationForm"),
-                document.getElementById("father"));
+                document.getElementById("father"),
+                alertContainer);
             creationForm.registerEvents(this);
-
-
 
         }
 
