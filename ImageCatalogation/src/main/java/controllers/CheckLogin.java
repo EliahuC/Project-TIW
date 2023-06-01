@@ -78,7 +78,6 @@ public class CheckLogin extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
-		System.out.println(username + " " + password);
 		UserDAO userDAO = new UserDAO(connection);
 		User user = null;
 		

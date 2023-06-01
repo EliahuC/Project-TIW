@@ -70,7 +70,6 @@ public class PasteCategory extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("Sei dentro PasteCategory");
 		String destination=null;
 		boolean badRequest = false;
 		Category copiedCategory = (Category) request.getSession().getAttribute("copiedCategory");
@@ -90,7 +89,6 @@ public class PasteCategory extends HttpServlet {
 		}
 		
 		CategoryDAO category= new CategoryDAO(connection);
-		//List<Category> categories = null;
 		String copiedCategoryNewId = new String();
 		
 		try {

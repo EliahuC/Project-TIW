@@ -78,7 +78,6 @@ public class CopyCategory extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("Sei in CopyCategory");
 		String fatherID=null;
 		boolean badRequest = false;
 		

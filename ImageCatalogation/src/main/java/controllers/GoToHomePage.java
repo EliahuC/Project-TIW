@@ -86,10 +86,6 @@ public class GoToHomePage extends HttpServlet {
 		
 		try {
 			categories = categoryDAO.findAllCategories();
-
-			for(Category c : categories) {
-				System.out.println("Id: " + c.getId() + ", name:  " + c.getName());
-			}
 		}catch(Exception e) {
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "DATABASE ERROR: CANNOT FIND THE CATEGORIES");
