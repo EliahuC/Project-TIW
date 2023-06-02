@@ -1,6 +1,6 @@
 
  function makeCall(method, url, formElement, cback, reset = true) {
-     const req = new XMLHttpRequest(); // visible by closure
+    var req = new XMLHttpRequest(); // visible by closure
     req.onreadystatechange = function() {
       cback(req)
     }; // closure
@@ -17,7 +17,7 @@
 
 
  function makeCallJson(method, url, body, cback) {
-     const req = new XMLHttpRequest(); // visible by closure
+    var req = new XMLHttpRequest(); // visible by closure
     req.onreadystatechange = function() {
       cback(req)
     }; // closure

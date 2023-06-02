@@ -30,7 +30,7 @@ public class CheckLoginJS extends HttpServlet {
 		connection = ConnectionHandler.getConnection(getServletContext());
 	}
 	
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws  IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String username = StringEscapeUtils.escapeJava(request.getParameter("username"));
 		String password = StringEscapeUtils.escapeJava(request.getParameter("password"));
 

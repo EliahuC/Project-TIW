@@ -23,8 +23,8 @@ public class ModifyNameJS extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String newName;
-        String id ;
+        String newName = null;
+        String id = null;
 
         try{
             newName = StringEscapeUtils.escapeJava(request.getParameter("name"));

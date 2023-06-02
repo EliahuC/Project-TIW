@@ -8,18 +8,18 @@ import java.sql.SQLException;
 import it.polimi.tiw.beans.User;
 
 public class UserDAO {
-	private final Connection connection;
+	private Connection con;
 	
 	public UserDAO(Connection connection) {
-		this.connection = connection;
+		this.con = connection;
 	}
 	
 	public User checkCredentials(String username, String password) throws SQLException {
 		String query = "SELECT id, username, name, surname FROM user WHERE username = ? AND password = ?";
-		try (PreparedStatement pStatement = connection.prepareStatement(query)) {
+		try (PreparedStatement pStatement = con.prepareStatement(query);) {
 			pStatement.setString(1, username);
 			pStatement.setString(2, password);
-			try (ResultSet result = pStatement.executeQuery()) {
+			try (ResultSet result = pStatement.executeQuery();) {
 				if(!result.isBeforeFirst()) // there is no result
 					return null;
 				else {

@@ -42,13 +42,13 @@ public class SaveCategoriesJS extends HttpServlet {
         connection = ConnectionHandler.getConnection(getServletContext());
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws  IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doPost(request, response);
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws  IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         StringBuilder stringBuilder = new StringBuilder();
-        String line;
+        String line = null;
         try {
             BufferedReader reader = request.getReader();
             while ((line = reader.readLine()) != null)
@@ -62,7 +62,7 @@ public class SaveCategoriesJS extends HttpServlet {
         Gson gson = new Gson();
         Type categoryListType = new TypeToken<ArrayList<CategoryChanges>>() {
         }.getType();
-        ArrayList<CategoryChanges> categoryUpdateArray;
+        ArrayList<CategoryChanges> categoryUpdateArray = null;
 
         try {
             categoryUpdateArray = gson.fromJson(stringBuilder.toString(), categoryListType);

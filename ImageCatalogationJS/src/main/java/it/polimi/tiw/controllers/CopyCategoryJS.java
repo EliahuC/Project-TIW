@@ -39,7 +39,7 @@ public class CopyCategoryJS extends HttpServlet {
         connection = ConnectionHandler.getConnection(getServletContext());
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws  IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String newID;
         String fatherId;
         try {
@@ -76,7 +76,7 @@ public class CopyCategoryJS extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws IOException{
+            throws IOException, ServletException {
         doGet(request, response);
     }
 
