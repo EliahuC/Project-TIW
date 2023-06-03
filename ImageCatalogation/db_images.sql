@@ -38,7 +38,7 @@ CREATE TABLE `category` (
 
 LOCK TABLES `category` WRITE;
 /*!40000 ALTER TABLE `category` DISABLE KEYS */;
-INSERT INTO `category` VALUES ('1','materiali solidi'),('11','materiali inerti'),('111','inerti da edilizia'),('1111','amianto'),('11111','amianto in lastre'),('11112','amianto in frammenti'),('1112','materiali cementizi'),('112','ineri ceramici'),('1121','piastrelle'),('1122','sanitari'),('11221','bidet'),('12','materiali ferrosi'),('121','il mio cazzo'),('13','ferro');
+INSERT INTO `category` VALUES ('1','materiali solidi'),('11','materiali inerti'),('111','inerti da edilizia'),('1111','amianto'),('11111','amianto in lastre'),('11112','amianto in frammenti'),('112','ineri ceramici'),('1121','piastrelle'),('1122','sanitari'),('12','materiali ferrosi'),('121','oro'),('122','ferro'),('123','diamante'),('124','smeraldo'),('125','ossidiana'),('126','netherite'),('2','elementi liquidi'),('3','gas'),('4','combustibili');
 /*!40000 ALTER TABLE `category` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -65,7 +65,7 @@ CREATE TABLE `relationships` (
 
 LOCK TABLES `relationships` WRITE;
 /*!40000 ALTER TABLE `relationships` DISABLE KEYS */;
-INSERT INTO `relationships` VALUES ('1','11'),('1','12'),('1','13'),('11','111'),('11','112'),('111','1111'),('111','1112'),('1111','11111'),('1111','11112'),('112','1121'),('112','1122'),('1122','11221'),('12','121');
+INSERT INTO `relationships` VALUES ('1','11'),('1','12'),('11','111'),('11','112'),('111','1111'),('1111','11111'),('1111','11112'),('112','1121'),('112','1122'),('12','121'),('12','122'),('12','123'),('12','124'),('12','125'),('12','126');
 /*!40000 ALTER TABLE `relationships` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -92,7 +92,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (69,'a','a','prova','prova'),(10000,'baker','panificio','erizio','fonnesu');
+INSERT INTO `user` VALUES (1,'Andrew','Fats','Andrea','Grassi'),(22,'eli22','jew','Eliahu','Cohen'),(69,'a','a','prova','prova'),(90,'lollofonne','genova','Lorenzo','Fonnesu'),(100,'Gorilla','Chad','Marco ','Gervatini'),(9000,'TheGoat','luke','Luca','Guffanti'),(10000,'baker','panificio','Erizio','Fonnesu');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -109,4 +109,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-21 16:22:16
+-- Dump completed on 2023-06-01 15:38:13

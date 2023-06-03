@@ -66,10 +66,17 @@ public class PasteCategory extends HttpServlet {
     }
 
     /**
-     * Pastes the category and its subtree into a selected father calling createCategory
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doPost(request, response);
+	}
+    
+    /**
+     * Pastes the category and its subtree into a selected father calling createCategory
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String destination=null;
 		boolean badRequest = false;
 		Category copiedCategory = (Category) request.getSession().getAttribute("copiedCategory");

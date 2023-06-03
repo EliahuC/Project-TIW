@@ -12,7 +12,7 @@
 	<h1>Welcome to the images collection</h1>
 	
 	<div th:if="${linkClicked}">
-		<form action="#" th:action="@{/PasteCategory}" method="GET">
+		<form action="#" th:action="@{/PasteCategory}" method="POST">
   			<ul>
     	  		<li th:each="category : ${allCategories}">
    					<div th:if="${category.copied}">
@@ -52,7 +52,7 @@
 	</div>
 	
   	<div th:if="${linkClicked}">
-		<form action="#" th:action="@{/PasteCategory}" method="GET">
+		<form action="#" th:action="@{/PasteCategory}" method="POST">
 				<a th:href="@{/PasteCategory(categoryId=0)}">Copia qui</a>
 		</form>
 	</div>
