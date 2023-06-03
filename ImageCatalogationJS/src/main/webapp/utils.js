@@ -1,30 +1,30 @@
 
- function makeCall(method, url, formElement, cback, reset = true) {
+function makeCall(method, url, formElement, cback, reset = true) {
     var req = new XMLHttpRequest(); // visible by closure
     req.onreadystatechange = function() {
-      cback(req)
+        cback(req)
     }; // closure
     req.open(method, url);
     if (formElement == null) {
-      req.send();
+        req.send();
     } else {
-      req.send(new FormData(formElement));
+        req.send(new FormData(formElement));
     }
     if (formElement !== null && reset === true) {
-      formElement.reset();
+        formElement.reset();
     }
-  }
+}
 
 
- function makeCallJson(method, url, body, cback) {
+function makeCallJson(method, url, body, cback) {
     var req = new XMLHttpRequest(); // visible by closure
     req.onreadystatechange = function() {
-      cback(req)
+        cback(req)
     }; // closure
     req.open(method, url);
     if (body == null) {
-      req.send();
+        req.send();
     } else {
-      req.send(JSON.stringify(body));
+        req.send(JSON.stringify(body));
     }
-  }
+}

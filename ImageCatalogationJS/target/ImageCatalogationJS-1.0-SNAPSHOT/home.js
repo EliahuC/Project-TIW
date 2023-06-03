@@ -309,7 +309,7 @@
         var newFatherId = destination.getAttribute("categoryId");
         oldFatherId=oldFatherId.substring(0,oldFatherId.length-1);
         var isAllowed = true;
-        if (//newFatherId === oldFatherId ||
+        if (newFatherId === oldFatherId ||
             (newFatherId.substring(0, categoryId.length) === categoryId) ||
             newFatherId === categoryId) {
             isAllowed = false;
@@ -349,7 +349,7 @@
                 var newFatherId = destination.getAttribute("categoryId");
                 oldFatherId=oldFatherId.substring(0,oldFatherId.length-1);
                 var isAllowed = true;
-                if (//newFatherId === oldFatherId ||
+                if (newFatherId === oldFatherId ||
                     (newFatherId.substring(0, categoryID.length) === categoryID) ||
                     newFatherId === categoryID) {
                     isAllowed = false;

@@ -23,13 +23,13 @@ import org.apache.commons.lang.StringEscapeUtils;
 @MultipartConfig
 @WebServlet("/LoginJS")
 public class CheckLoginJS extends HttpServlet {
-	private static final long serialVersionUID = 1L; 
+	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
 
 	public void init() throws ServletException {
 		connection = ConnectionHandler.getConnection(getServletContext());
 	}
-	
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String username = StringEscapeUtils.escapeJava(request.getParameter("username"));
 		String password = StringEscapeUtils.escapeJava(request.getParameter("password"));
@@ -69,7 +69,7 @@ public class CheckLoginJS extends HttpServlet {
 
 		}
 	}
-	
+
 	public void destroy() {
 		try {
 			ConnectionHandler.closeConnection(connection);

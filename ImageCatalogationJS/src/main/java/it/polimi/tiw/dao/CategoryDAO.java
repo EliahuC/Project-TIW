@@ -14,7 +14,6 @@ import it.polimi.tiw.beans.Category;
  */
 public class CategoryDAO {
     private Connection con;
-    private final static ArrayList<String> alreadyCopied=new ArrayList<>();
     public CategoryDAO(Connection connection){
         this.con=connection;
     }
@@ -191,56 +190,11 @@ public class CategoryDAO {
                     Category category = new Category();
                     category.setId(result.getString("id"));
                     category.setName(result.getString("name"));
-                    if(alreadyCopied.contains(category.getId())){
-                        category.setAlreadyCopied(true);
-                    }
                     categories.add(category);
                 }
             }
         }
         return categories;
-    }
-
-    /**
-     * Creates a list with all categories in the database and assigns them the value "true" in their booleans if conditions are met
-     * @param allCopiedCategories containing all categories that has been copied
-     * @return the list
-     * @throws SQLException
-     */
-    public List<Category> findAllCategories(ArrayList<String> allCopiedCategories) throws SQLException {
-        List<Category> categories = new ArrayList<Category>();
-        String query = "SELECT * FROM Category";
-        try (PreparedStatement pstatement = con.prepareStatement(query);){
-            try (ResultSet result = pstatement.executeQuery();) {
-                while (result.next()) {
-                    Category category = new Category();
-                    category.setId(result.getString("id"));
-                    category.setName(result.getString("name"));
-                    if(allCopiedCategories.contains(category.getId())) {
-                        category.setCopied(true);
-                    }
-                    if(alreadyCopied.contains(category.getId())){
-                        category.setAlreadyCopied(true);
-                    }
-                    categories.add(category);
-                }
-            }
-        }
-        alreadyCopied.addAll(allCopiedCategories);
-        return categories;
-    }
-
-    /**
-     * Add all categories that have been copied to allCopiedCategory
-     * @param copiedCategory
-     * @param allCopiedCategories contains all categories that have been copied
-     */
-    public void getAllCopied(Category copiedCategory, ArrayList<String> allCopiedCategories) {
-        allCopiedCategories.add(copiedCategory.getId());
-
-        for(Category c:copiedCategory.getSubparts().keySet()) {
-            getAllCopied(c,allCopiedCategories);
-        }
     }
 
     public void updateName(String categoryId, String newName) throws SQLException{
@@ -252,4 +206,3 @@ public class CategoryDAO {
         }
     }
 }
-

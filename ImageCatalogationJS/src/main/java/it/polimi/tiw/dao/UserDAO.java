@@ -9,11 +9,11 @@ import it.polimi.tiw.beans.User;
 
 public class UserDAO {
 	private Connection con;
-	
+
 	public UserDAO(Connection connection) {
 		this.con = connection;
 	}
-	
+
 	public User checkCredentials(String username, String password) throws SQLException {
 		String query = "SELECT id, username, name, surname FROM user WHERE username = ? AND password = ?";
 		try (PreparedStatement pStatement = con.prepareStatement(query);) {

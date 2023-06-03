@@ -12,8 +12,6 @@ public class Category implements Serializable{
 	
 	private String id;
 	private String name;
-	private Boolean copied = false;
-	private Boolean alreadyCopied=false;
 	private Map<Category, String> children = new HashMap<Category, String>();
 	
 	public String getId() {
@@ -36,18 +34,5 @@ public class Category implements Serializable{
 	}
 	public void removeSubpart(Category c) {
 		children.remove(c);
-	}
-	public void setCopied(boolean x) {
-		this.copied=x;
-	}
-	
-	public boolean getCopied() {
-		return copied;
-	}
-	public void setAlreadyCopied(boolean b) {
-		this.alreadyCopied=b;
-	}
-	public boolean getAlreadyCopied(){
-		return this.alreadyCopied;
 	}
 }
