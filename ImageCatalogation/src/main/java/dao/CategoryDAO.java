@@ -219,9 +219,6 @@ public class CategoryDAO {
 					if(allCopiedCategories.contains(category.getId())) {
 						category.setCopied(true);
 					}
-					if(alreadyCopied.contains(category.getId())){
-						category.setAlreadyCopied(true);
-					}
 					categories.add(category);
 				}
 			}
