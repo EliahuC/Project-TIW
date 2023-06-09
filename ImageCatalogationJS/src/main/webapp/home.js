@@ -92,6 +92,8 @@
                     if (req.readyState === XMLHttpRequest.DONE) {
                         if (req.status === 200) {
                             clickedListItem.textContent = category.id + " " + category.name;
+                            creationForm.reset();
+                            creationForm.show();
                         } else if (req.status === 403) {
                             window.location.href = req.getResponseHeader("Location");
                             window.sessionStorage.removeItem("username");
