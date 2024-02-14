@@ -1,7 +1,7 @@
 # Project-TIW
 Progetto realizzato per il corso di Tecnologie Informatiche Del Web del Politecnico di Milano nell'anno 2023
 
-Voto conseguito : 29
+Voto conseguito : 29/30
 
 ## CREDITS  
 [Eliahu Itamar Cohen](https://github.com/EliahuC)    
